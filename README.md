@@ -1,2 +1,2 @@
-# schopsche.github.io
+# schopsche
 lokon3D
