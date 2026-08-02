@@ -152,7 +152,7 @@
   }
   #hintbar .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;}
 
-  #symmetry-indicator, #magnet-indicator, #direction-indicator{
+  #symmetry-indicator, #magnet-indicator, #direction-indicator, #lang-indicator{
     position:absolute;left:20px;bottom:64px;z-index:20;
     display:flex;align-items:center;gap:7px;
     background:rgba(27,23,32,0.85);border:1px solid var(--border);
@@ -161,12 +161,14 @@
     cursor:pointer;backdrop-filter:blur(6px);
     transition:color .15s ease, border-color .15s ease;
   }
-  #symmetry-indicator svg, #magnet-indicator svg, #direction-indicator svg{width:15px;height:15px;flex:none;}
-  #symmetry-indicator:hover, #magnet-indicator:hover, #direction-indicator:hover{border-color:var(--text-muted);}
+  #symmetry-indicator svg, #magnet-indicator svg, #direction-indicator svg, #lang-indicator svg{width:15px;height:15px;flex:none;}
+  #symmetry-indicator:hover, #magnet-indicator:hover, #direction-indicator:hover, #lang-indicator:hover{border-color:var(--text-muted);color:var(--text);}
   #symmetry-indicator.on, #magnet-indicator.on, #direction-indicator.on{color:#7cf0a8;border-color:rgba(124,240,168,0.45);}
   #symmetry-indicator.on svg, #magnet-indicator.on svg, #direction-indicator.on svg{filter:drop-shadow(0 0 3px rgba(124,240,168,0.5));}
   #magnet-indicator{bottom:110px;}
   #direction-indicator{bottom:156px;}
+  #lang-indicator{bottom:202px;}
+  #lang-text{font-weight:600;letter-spacing:0.04em;}
 
   #polycount{
     position:absolute;right:324px;bottom:18px;z-index:20;
@@ -333,6 +335,7 @@
     #symmetry-indicator{bottom:calc(46vh + 60px);}
     #magnet-indicator{bottom:calc(46vh + 106px);}
     #direction-indicator{bottom:calc(46vh + 152px);}
+    #lang-indicator{bottom:calc(46vh + 198px);}
     #brushbar{left:8px;}
     .brush-btn{width:38px;height:38px;}
   }
@@ -344,65 +347,65 @@
 
   <header id="topbar">
     <div class="toolbar" id="toolbar">
-      <button class="tool-btn" data-mode="view" title="Обзор (1)">
+      <button class="tool-btn" data-mode="view" title="Обзор (1)" data-i18n-title="tool.view.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l5.5 15 2-6.2L19 9.5 5 3z"/></svg>
-        <span>Обзор</span>
+        <span data-i18n="tool.view.label">Обзор</span>
       </button>
-      <button class="tool-btn" data-mode="add" title="Новая прядь (2)">
+      <button class="tool-btn" data-mode="add" title="Новая прядь (2)" data-i18n-title="tool.add.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18c3-8 6-11 8-11s2 4 4 4 3-3 5-2"/><circle cx="4" cy="18" r="1.6" fill="currentColor" stroke="none"/></svg>
-        <span>Прядь</span>
+        <span data-i18n="tool.add.label">Прядь</span>
       </button>
-      <button class="tool-btn" data-mode="edit" title="Редактировать точки (3)">
+      <button class="tool-btn" data-mode="edit" title="Редактировать точки (3)" data-i18n-title="tool.edit.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="2"/><circle cx="18" cy="7" r="2"/><path d="M7.6 15.6L16.4 8.4"/></svg>
-        <span>Точки</span>
+        <span data-i18n="tool.edit.label">Точки</span>
       </button>
-      <button class="tool-btn" data-mode="trim" title="Обрезать прядь (4)">
+      <button class="tool-btn" data-mode="trim" title="Обрезать прядь (4)" data-i18n-title="tool.trim.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.3"/><circle cx="6" cy="18" r="2.3"/><path d="M8.3 7.5L19 17M8.3 16.5L19 7"/></svg>
-        <span>Обрезка</span>
+        <span data-i18n="tool.trim.label">Обрезка</span>
       </button>
-      <button class="tool-btn" data-mode="rotate" title="Вращать прядь (5)">
+      <button class="tool-btn" data-mode="rotate" title="Вращать прядь (5)" data-i18n-title="tool.rotate.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114-5.2M20 12a8 8 0 01-14 5.2"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>
-        <span>Вращение</span>
+        <span data-i18n="tool.rotate.label">Вращение</span>
       </button>
       <div class="toolbar-sep"></div>
-      <button class="tool-btn" id="duplicate-btn" title="Дублировать прядь (Ctrl+D)">
+      <button class="tool-btn" id="duplicate-btn" title="Дублировать прядь (Ctrl+D)" data-i18n-title="tool.duplicate.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M4 16V5a1 1 0 011-1h11"/></svg>
       </button>
-      <button class="tool-btn" id="mirror-btn" title="Отзеркалить прядь (X-парой)">
+      <button class="tool-btn" id="mirror-btn" title="Отзеркалить прядь (X-парой)" data-i18n-title="tool.mirror.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l4 4-4 4M19 8l-4 4 4 4"/></svg>
       </button>
-      <button class="tool-btn danger-btn" id="delete-btn" title="Удалить прядь (Delete)">
+      <button class="tool-btn danger-btn" id="delete-btn" title="Удалить прядь (Delete)" data-i18n-title="tool.delete.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0l1 12a1 1 0 001 1h6a1 1 0 001-1l1-12"/></svg>
       </button>
     </div>
 
     <div class="header-actions">
-      <button class="export-btn" id="import-head-btn" title="Импортировать голову из FBX или OBJ">
+      <button class="export-btn" id="import-head-btn" title="Импортировать голову из FBX или OBJ" data-i18n-title="btn.importHead.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9m0 0l-4 4m4-4l4 4M5 5h14"/></svg>
-        <span>Голова</span>
+        <span data-i18n="btn.importHead.label">Голова</span>
       </button>
       <input type="file" id="fbx-file-input" accept=".fbx,.obj" style="display:none;">
 
-      <button class="export-btn" id="import-ref-btn" title="Импортировать референс-объекты (можно несколько сразу)">
+      <button class="export-btn" id="import-ref-btn" title="Импортировать референс-объекты (можно несколько сразу)" data-i18n-title="btn.importRef.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></svg>
-        <span>Референс</span>
+        <span data-i18n="btn.importRef.label">Референс</span>
       </button>
       <input type="file" id="ref-file-input" accept=".fbx,.obj" multiple style="display:none;">
 
-      <button class="export-btn" id="save-project-btn" title="Сохранить проект (все пряди, настройки, референсы)">
+      <button class="export-btn" id="save-project-btn" title="Сохранить проект (все пряди, настройки, референсы)" data-i18n-title="btn.save.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l3 3v13H5V4z"/><path d="M8 4v5h7V4M8 14h8v6H8z"/></svg>
-        <span>Сохранить</span>
+        <span data-i18n="btn.save.label">Сохранить</span>
       </button>
 
-      <button class="export-btn" id="load-project-btn" title="Загрузить проект">
+      <button class="export-btn" id="load-project-btn" title="Загрузить проект" data-i18n-title="btn.load.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l1.5-3h13L20 7M4 7v12a1 1 0 001 1h14a1 1 0 001-1V7M4 7h16"/><path d="M9 12h6M9 15h6"/></svg>
-        <span>Загрузить</span>
+        <span data-i18n="btn.load.label">Загрузить</span>
       </button>
       <input type="file" id="project-file-input" accept=".json" style="display:none;">
 
-      <button class="export-btn" id="export-btn" title="Экспорт модели прядей в OBJ (+MTL с цветом)">
+      <button class="export-btn" id="export-btn" title="Экспорт модели прядей в OBJ (+MTL с цветом)" data-i18n-title="btn.export.title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 19h14"/></svg>
-        <span>Экспорт .obj</span>
+        <span data-i18n="btn.export.label">Экспорт .obj</span>
       </button>
     </div>
   </header>
@@ -410,43 +413,47 @@
   <div id="toast"></div>
 
   <aside id="brushbar">
-    <button class="brush-btn" data-brush="move" title="Мув — локальный сдвиг мелких прядок">
+    <button class="brush-btn" data-brush="move" title="Мув — локальный сдвиг мелких прядок" data-i18n-title="brush.move.title">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12.5 2.5c1.5 2.3-1.8 3.6-1.4 6.2.3 2 2.6 2.4 2.4 4.6-.2 2-2.4 2.3-2.1 4.4.2 1.6 1.6 2.1 1.4 3.8"/>
       </svg>
     </button>
     <div class="brush-options" id="brush-options">
-      <span class="brush-options-label">Радиус</span>
+      <span class="brush-options-label" data-i18n="brush.radius.label">Радиус</span>
       <input type="range" id="brush-radius-slider" min="0.04" max="0.4" step="0.01" value="0.16">
     </div>
   </aside>
 
   <div id="draft-actions">
-    <button class="pill-btn" id="draft-cancel">Отмена (Esc)</button>
-    <button class="pill-btn primary" id="draft-finish" disabled>Готово (Enter)</button>
+    <button class="pill-btn" id="draft-cancel" data-i18n="draft.cancel">Отмена (Esc)</button>
+    <button class="pill-btn primary" id="draft-finish" disabled data-i18n="draft.finish">Готово (Enter)</button>
   </div>
 
   <div id="hintbar"><span class="dot"></span><span id="hint-text">Вращай камеру мышью • ЛКМ по пряди — выбрать</span></div>
-  <button id="magnet-indicator" class="on" title="Магнит к голове (горячая клавиша C)">
+  <button id="magnet-indicator" class="on" title="Магнит к голове (горячая клавиша C)" data-i18n-title="indicator.magnet.title">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v7a5 5 0 0010 0V4"/><path d="M7 4h3.3M13.7 4H17M7 8h3.3M13.7 8H17"/></svg>
     <span id="magnet-text">Магнит: вкл</span>
   </button>
-  <button id="direction-indicator" class="on" title="Ориентация волос по мешу при редактировании">
+  <button id="direction-indicator" class="on" title="Ориентация волос по мешу при редактировании" data-i18n-title="indicator.direction.title">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v4M12 12l4-2"/></svg>
     <span id="direction-text">Направление: вкл</span>
   </button>
-  <button id="symmetry-indicator" title="Симметрия X (горячая клавиша X)">
+  <button id="symmetry-indicator" title="Симметрия X (горячая клавиша X)" data-i18n-title="indicator.symmetry.title">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 8l-3 4 3 4M17 8l3 4-3 4"/></svg>
     <span id="symmetry-text">Симметрия X: выкл</span>
+  </button>
+  <button id="lang-indicator" title="Переключить язык интерфейса" data-i18n-title="lang.toggle.title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.8 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.8-3.8-9s1.3-6.4 3.8-9z"/></svg>
+    <span id="lang-text">RU</span>
   </button>
   <div id="polycount">0 полигонов</div>
 
   <aside id="sidebar">
     <div id="sidebar-scroll">
-      <div class="side-heading">Пряди <span id="lock-total-count" style="color:var(--text-dim);font-weight:500;"></span></div>
+      <div class="side-heading"><span data-i18n="heading.strands">Пряди</span> <span id="lock-total-count" style="color:var(--text-dim);font-weight:500;"></span></div>
       <ul id="lock-list"></ul>
       <div id="properties-root"></div>
-      <div class="side-heading" id="ref-heading" style="display:none;">Референсы <span id="ref-total-count" style="color:var(--text-dim);font-weight:500;"></span></div>
+      <div class="side-heading" id="ref-heading" style="display:none;"><span data-i18n="heading.references">Референсы</span> <span id="ref-total-count" style="color:var(--text-dim);font-weight:500;"></span></div>
       <ul id="ref-list"></ul>
       <div id="ref-properties-root"></div>
     </div>
@@ -455,6 +462,185 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+/* ---- i18n: RU/EN dictionary + t()/setLang() shared by every module in this file ---- */
+var LOKON_I18N = {
+  ru: {
+    appTitle: 'Локон — 3D-конструктор волос',
+    'tool.view.title': 'Обзор (1)', 'tool.view.label': 'Обзор',
+    'tool.add.title': 'Новая прядь (2)', 'tool.add.label': 'Прядь',
+    'tool.edit.title': 'Редактировать точки (3)', 'tool.edit.label': 'Точки',
+    'tool.trim.title': 'Обрезать прядь (4)', 'tool.trim.label': 'Обрезка',
+    'tool.rotate.title': 'Вращать прядь (5)', 'tool.rotate.label': 'Вращение',
+    'tool.duplicate.title': 'Дублировать прядь (Ctrl+D)',
+    'tool.mirror.title': 'Отзеркалить прядь (X-парой)',
+    'tool.delete.title': 'Удалить прядь (Delete)',
+    'btn.importHead.title': 'Импортировать голову из FBX или OBJ', 'btn.importHead.label': 'Голова',
+    'btn.importRef.title': 'Импортировать референс-объекты (можно несколько сразу)', 'btn.importRef.label': 'Референс',
+    'btn.save.title': 'Сохранить проект (все пряди, настройки, референсы)', 'btn.save.label': 'Сохранить',
+    'btn.load.title': 'Загрузить проект', 'btn.load.label': 'Загрузить',
+    'btn.export.title': 'Экспорт модели прядей в OBJ (+MTL с цветом)', 'btn.export.label': 'Экспорт .obj',
+    'brush.move.title': 'Мув — локальный сдвиг мелких прядок', 'brush.radius.label': 'Радиус',
+    'draft.cancel': 'Отмена (Esc)', 'draft.finish': 'Готово (Enter)',
+    'indicator.magnet.title': 'Магнит к голове (горячая клавиша C)',
+    'indicator.direction.title': 'Ориентация волос по мешу при редактировании',
+    'indicator.symmetry.title': 'Симметрия X (горячая клавиша X)',
+    'heading.strands': 'Пряди', 'heading.references': 'Референсы',
+    'lang.toggle.title': 'Переключить язык интерфейса',
+    'state.on': 'вкл', 'state.off': 'выкл',
+    'indicator.magnet.label': 'Магнит', 'indicator.direction.label': 'Направление', 'indicator.symmetry.label': 'Симметрия X',
+    'hint.view': 'Вращай камеру мышью (ПКМ — панорама, колесо — зум) • ЛКМ по пряди — выбрать',
+    'hint.brush.selected': 'Тяни по пряди — кисть «Мув» локально сдвигает ближайший пучок волосков',
+    'hint.brush.none': 'Выбери прядь, затем тяни по ней кистью',
+    'hint.add.start': 'Клик по голове — поставить первую точку пряди',
+    'hint.add.continue': 'Клик — добавить точку ({n}) • Enter — завершить • Backspace — отменить точку',
+    'hint.edit.selected': 'Тяни точку, чтобы сместить • Двойной клик — удалить точку • Розовая точка на линии — добавить точку • Клик по голове — удлинить прядь',
+    'hint.trim.selected': 'Клик по точке — обрезать прядь в этом месте (всё дальше будет удалено)',
+    'hint.rotate.selected': 'Тяни вокруг корня пряди (фиолетовое кольцо) — вращение сечения',
+    'hint.selectPrompt': 'Выбери прядь слева или кликни по ней в сцене',
+    'toast.undone': 'Отменено', 'toast.redone': 'Повторено',
+    'toast.projectSaved': 'Проект сохранён',
+    'toast.projectFileCorrupt': 'Файл проекта повреждён или не JSON',
+    'toast.projectLoaded': 'Проект загружен: {locks} прядей, {refs} референсов',
+    'toast.projectRestoreError': 'Ошибка при восстановлении проекта: {msg}',
+    'toast.noStrandsToExport': 'Нет ни одной пряди для экспорта',
+    'toast.exported': 'Экспортировано: lokon-hair.obj + lokon-hair.mtl (с UV и цветом, положи оба файла в одну папку)',
+    'toast.exportError': 'Ошибка экспорта OBJ: {msg}',
+    'toast.importingHead': 'Импортирую голову из {name}…',
+    'toast.readFileError': 'Не удалось прочитать файл',
+    'toast.noMeshInFile': 'В файле не найдено полигональной сетки',
+    'toast.headImported': 'Голова импортирована: {name} ({n} точек)',
+    'toast.readFileErrorWithMsg': 'Ошибка чтения файла: {msg}',
+    'toast.importingRefs': 'Импортирую референсы ({n})…',
+    'toast.refsImported': 'Референсы импортированы: {n}',
+    'toast.noMeshInFileNamed': 'В файле {name} не найдено полигональной сетки',
+    'toast.refFileError': 'Ошибка в файле {name}: {msg}',
+    'toast.readFileErrorNamed': 'Не удалось прочитать {name}',
+    'toast.loadingProject': 'Загружаю проект…',
+    'toast.readProjectFileError': 'Не удалось прочитать файл проекта',
+    'lock.mirrorLinked.on': 'Зеркальная связь включена — клик, чтобы отключить',
+    'lock.mirrorLinked.off': 'Зеркальная связь отключена — клик, чтобы включить',
+    'ref.delete.title': 'Удалить референс',
+    'field.positionX': 'Позиция X', 'field.positionY': 'Позиция Y', 'field.positionZ': 'Позиция Z',
+    'field.scale': 'Масштаб', 'field.visibility': 'Видимость',
+    'action.hide': 'Скрыть', 'action.show': 'Показать',
+    'empty.selectStrand': 'Выбери прядь слева или нажми «Прядь» на панели сверху, чтобы нарисовать новую кривую на голове.',
+    'field.hairType': 'Тип волос', 'hairType.natural': 'Естественные', 'hairType.blunt': 'Обрезанные',
+    'field.width': 'Ширина', 'field.thickness': 'Толщина', 'field.meshOffset': 'Отступ от меша', 'field.rotation': 'Вращение',
+    'field.splitEnds': 'Секущиеся концы', 'field.splitGapWidth': 'Ширина щели',
+    'field.density': 'Густота', 'field.spread': 'Разброс', 'field.lengthVariation': 'Разнообразие длины', 'field.waviness': 'Волнистость',
+    'action.deleteStrand': 'Удалить прядь',
+    'field.thicknessProfile': 'Профиль толщины', 'action.reset': 'Сброс',
+    'curveType.spline': 'Сплайн', 'curveType.linear': 'Линейно',
+    'hint.curveEditor': 'Клик — новая точка, тяни — сдвиг, клик по точке — выбрать тип и ручки, 2 клика — удалить',
+    'field.splitCuts': 'Разрезы: позиция и длина каждого', 'axis.tip': 'кончик', 'axis.root': 'к корню',
+    'hint.splitCutsEditor': 'Клик — новый разрез • тяни — позиция и длина этого разреза • 2 клика — удалить',
+    'polycount.under1k': '{n} полигонов волос', 'polycount.thousands': '{n}k полигонов волос',
+    'error.fbxUnknownPropType': 'неизвестный тип свойства "{type}" (возможно, неподдерживаемая версия FBX)',
+    'error.noMeshesInFbx': 'В файле не найдено сеток (Geometry) с полигонами.',
+    'error.noFacesInObj': 'В OBJ-файле не найдено граней (f).'
+  },
+  en: {
+    appTitle: 'Lokon — 3D Hair Constructor',
+    'tool.view.title': 'View (1)', 'tool.view.label': 'View',
+    'tool.add.title': 'New strand (2)', 'tool.add.label': 'Strand',
+    'tool.edit.title': 'Edit points (3)', 'tool.edit.label': 'Points',
+    'tool.trim.title': 'Trim strand (4)', 'tool.trim.label': 'Trim',
+    'tool.rotate.title': 'Rotate strand (5)', 'tool.rotate.label': 'Rotate',
+    'tool.duplicate.title': 'Duplicate strand (Ctrl+D)',
+    'tool.mirror.title': 'Mirror strand (X pair)',
+    'tool.delete.title': 'Delete strand (Delete)',
+    'btn.importHead.title': 'Import head from FBX or OBJ', 'btn.importHead.label': 'Head',
+    'btn.importRef.title': 'Import reference objects (multiple at once)', 'btn.importRef.label': 'Reference',
+    'btn.save.title': 'Save project (all strands, settings, references)', 'btn.save.label': 'Save',
+    'btn.load.title': 'Load project', 'btn.load.label': 'Load',
+    'btn.export.title': 'Export strand model to OBJ (+MTL with color)', 'btn.export.label': 'Export .obj',
+    'brush.move.title': 'Move — local shift of small strand clumps', 'brush.radius.label': 'Radius',
+    'draft.cancel': 'Cancel (Esc)', 'draft.finish': 'Done (Enter)',
+    'indicator.magnet.title': 'Magnet to head (hotkey C)',
+    'indicator.direction.title': 'Orient hair to mesh while editing',
+    'indicator.symmetry.title': 'X symmetry (hotkey X)',
+    'heading.strands': 'Strands', 'heading.references': 'References',
+    'lang.toggle.title': 'Switch interface language',
+    'state.on': 'On', 'state.off': 'Off',
+    'indicator.magnet.label': 'Magnet', 'indicator.direction.label': 'Direction', 'indicator.symmetry.label': 'X symmetry',
+    'hint.view': 'Rotate the camera with the mouse (RMB — pan, wheel — zoom) • LMB on a strand — select',
+    'hint.brush.selected': 'Drag over a strand — the Move brush locally shifts the nearest tuft',
+    'hint.brush.none': 'Select a strand, then drag over it with the brush',
+    'hint.add.start': 'Click on the head — place the first strand point',
+    'hint.add.continue': 'Click — add a point ({n}) • Enter — finish • Backspace — undo point',
+    'hint.edit.selected': 'Drag a point to move it • Double-click — delete the point • Pink dot on the line — add a point • Click on the head — extend the strand',
+    'hint.trim.selected': 'Click a point — trim the strand there (everything beyond is removed)',
+    'hint.rotate.selected': 'Drag around the strand root (purple ring) — rotate the cross-section',
+    'hint.selectPrompt': 'Select a strand on the left or click it in the scene',
+    'toast.undone': 'Undone', 'toast.redone': 'Redone',
+    'toast.projectSaved': 'Project saved',
+    'toast.projectFileCorrupt': 'Project file is corrupted or not JSON',
+    'toast.projectLoaded': 'Project loaded: {locks} strands, {refs} references',
+    'toast.projectRestoreError': 'Error restoring project: {msg}',
+    'toast.noStrandsToExport': 'No strands to export',
+    'toast.exported': 'Exported: lokon-hair.obj + lokon-hair.mtl (with UV and color, put both files in the same folder)',
+    'toast.exportError': 'OBJ export error: {msg}',
+    'toast.importingHead': 'Importing head from {name}…',
+    'toast.readFileError': 'Failed to read file',
+    'toast.noMeshInFile': 'No polygon mesh found in the file',
+    'toast.headImported': 'Head imported: {name} ({n} points)',
+    'toast.readFileErrorWithMsg': 'Error reading file: {msg}',
+    'toast.importingRefs': 'Importing references ({n})…',
+    'toast.refsImported': 'References imported: {n}',
+    'toast.noMeshInFileNamed': 'No polygon mesh found in file {name}',
+    'toast.refFileError': 'Error in file {name}: {msg}',
+    'toast.readFileErrorNamed': 'Failed to read {name}',
+    'toast.loadingProject': 'Loading project…',
+    'toast.readProjectFileError': 'Failed to read project file',
+    'lock.mirrorLinked.on': 'Mirror link enabled — click to disable',
+    'lock.mirrorLinked.off': 'Mirror link disabled — click to enable',
+    'ref.delete.title': 'Delete reference',
+    'field.positionX': 'Position X', 'field.positionY': 'Position Y', 'field.positionZ': 'Position Z',
+    'field.scale': 'Scale', 'field.visibility': 'Visibility',
+    'action.hide': 'Hide', 'action.show': 'Show',
+    'empty.selectStrand': 'Select a strand on the left or click “Strand” on the top panel to draw a new curve on the head.',
+    'field.hairType': 'Hair type', 'hairType.natural': 'Natural', 'hairType.blunt': 'Blunt-cut',
+    'field.width': 'Width', 'field.thickness': 'Thickness', 'field.meshOffset': 'Mesh offset', 'field.rotation': 'Rotation',
+    'field.splitEnds': 'Split ends', 'field.splitGapWidth': 'Gap width',
+    'field.density': 'Density', 'field.spread': 'Spread', 'field.lengthVariation': 'Length variation', 'field.waviness': 'Waviness',
+    'action.deleteStrand': 'Delete strand',
+    'field.thicknessProfile': 'Thickness profile', 'action.reset': 'Reset',
+    'curveType.spline': 'Spline', 'curveType.linear': 'Linear',
+    'hint.curveEditor': 'Click — new point, drag — move, click a point — choose type and handles, double-click — delete',
+    'field.splitCuts': 'Splits: position and length of each', 'axis.tip': 'tip', 'axis.root': 'to root',
+    'hint.splitCutsEditor': 'Click — new split • drag — this split\'s position and length • double-click — delete',
+    'polycount.under1k': '{n} hair polygons', 'polycount.thousands': '{n}k hair polygons',
+    'error.fbxUnknownPropType': 'unknown property type "{type}" (possibly an unsupported FBX version)',
+    'error.noMeshesInFbx': 'No meshes (Geometry) with polygons found in the file.',
+    'error.noFacesInObj': 'No faces (f) found in the OBJ file.'
+  }
+};
+var LOKON_LANG = (function(){
+  try { return localStorage.getItem('lokon-lang') === 'en' ? 'en' : 'ru'; } catch(e){ return 'ru'; }
+})();
+function t(key, params){
+  var dict = LOKON_I18N[LOKON_LANG] || LOKON_I18N.ru;
+  var str = dict[key] != null ? dict[key] : (LOKON_I18N.ru[key] != null ? LOKON_I18N.ru[key] : key);
+  if(params){
+    Object.keys(params).forEach(function(k){ str = str.split('{'+k+'}').join(params[k]); });
+  }
+  return str;
+}
+var LOKON_LANG_LISTENERS = [];
+function onLangChange(fn){ LOKON_LANG_LISTENERS.push(fn); }
+function setLang(lang){
+  if(lang !== 'ru' && lang !== 'en') return;
+  LOKON_LANG = lang;
+  try { localStorage.setItem('lokon-lang', lang); } catch(e){}
+  document.documentElement.lang = lang;
+  document.title = t('appTitle');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function(el){ el.textContent = t(el.getAttribute('data-i18n')); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-title]'), function(el){ el.title = t(el.getAttribute('data-i18n-title')); });
+  var langBtn = document.getElementById('lang-text');
+  if(langBtn) langBtn.textContent = lang.toUpperCase();
+  LOKON_LANG_LISTENERS.forEach(function(fn){ fn(); });
+}
+
 /* ---- LokonInflate (zlib/deflate decoder) ---- */
 // Minimal, dependency-free raw DEFLATE / zlib inflate implementation (RFC1950/1951)
 // Pure JS, works in Node and browsers. Returns Uint8Array.
@@ -740,7 +926,7 @@
           return out;
         }
         default:
-          throw new Error('неизвестный тип свойства "' + type + '" (возможно, неподдерживаемая версия FBX)');
+          throw new Error(t('error.fbxUnknownPropType', {type: type}));
       }
     }
 
@@ -1049,7 +1235,7 @@
       }
     }
     var meshes = extractMeshes(tree);
-    if(!meshes.length) throw new Error('В файле не найдено сеток (Geometry) с полигонами.');
+    if(!meshes.length) throw new Error(t('error.noMeshesInFbx'));
     return triangulateAndMerge(meshes);
   }
 
@@ -1084,7 +1270,7 @@
         }
       }
     }
-    if(!indices.length) throw new Error('В OBJ-файле не найдено граней (f).');
+    if(!indices.length) throw new Error(t('error.noFacesInObj'));
     return { positions: new Float32Array(positions), indices: new Uint32Array(indices) };
   }
 
@@ -1518,19 +1704,19 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
          starting parameters. Add new entries here to grow the list over time. ---- */
   var HAIR_TYPES = {
     natural: {
-      label: 'Естественные',
+      get label(){ return t('hairType.natural'); },
       curve: function(){ return defaultThicknessCurve(); },
       defaults: { density: 6, spread: 0.3, lengthVariation: 0.22, waviness: 0.2, depth: 0.022 }
     },
     blunt: {
-      label: 'Обрезанные',
+      get label(){ return t('hairType.blunt'); },
       curve: function(){ return [{t:0,v:1,type:'spline'},{t:0.88,v:0.94,type:'spline'},{t:1,v:0.88,type:'spline'}]; },
       defaults: { density: 1, spread: 0, lengthVariation: 0, waviness: 0, depth: 0.007 }
     }
   };
   var HAIR_TYPE_ORDER = ['natural', 'blunt'];
   var CURVE_POINT_TYPES = ['spline', 'linear'];
-  var CURVE_POINT_TYPE_LABELS = { spline: 'Сплайн', linear: 'Линейно' };
+  function curvePointTypeLabel(key){ return t('curveType.'+key); }
 
   function bezierEval(p0, p1, p2, p3, u){
     var mu = 1-u;
@@ -1609,8 +1795,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
 
     var field = document.createElement('div'); field.className = 'field';
     var row = document.createElement('div'); row.className = 'field-label-row';
-    var label = document.createElement('span'); label.className = 'field-label'; label.textContent = 'Профиль толщины';
-    var resetBtn = document.createElement('button'); resetBtn.className = 'curve-reset-btn'; resetBtn.textContent = 'Сброс';
+    var label = document.createElement('span'); label.className = 'field-label'; label.textContent = t('field.thicknessProfile');
+    var resetBtn = document.createElement('button'); resetBtn.className = 'curve-reset-btn'; resetBtn.textContent = t('action.reset');
     row.appendChild(label); row.appendChild(resetBtn);
     field.appendChild(row);
 
@@ -1649,7 +1835,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     CURVE_POINT_TYPES.forEach(function(typeKey){
       var btn = document.createElement('button');
       btn.className = 'curve-type-btn';
-      btn.textContent = CURVE_POINT_TYPE_LABELS[typeKey];
+      btn.textContent = curvePointTypeLabel(typeKey);
       btn.addEventListener('click', function(){
         if(!selectedPoint) return;
         pushUndoSnapshot();
@@ -1863,7 +2049,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     field.appendChild(svg);
     field.appendChild(typeRow);
     var hint = document.createElement('div'); hint.className = 'curve-hint';
-    hint.textContent = 'Клик — новая точка, тяни — сдвиг, клик по точке — выбрать тип и ручки, 2 клика — удалить';
+    hint.textContent = t('hint.curveEditor');
     field.appendChild(hint);
     wrap.appendChild(field);
   }
@@ -1879,7 +2065,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
 
     var field = document.createElement('div'); field.className = 'field';
     var row = document.createElement('div'); row.className = 'field-label-row';
-    var label = document.createElement('span'); label.className = 'field-label'; label.textContent = 'Разрезы: позиция и длина каждого';
+    var label = document.createElement('span'); label.className = 'field-label'; label.textContent = t('field.splitCuts');
     row.appendChild(label);
     field.appendChild(row);
 
@@ -1906,12 +2092,12 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     var tipLabel = document.createElementNS(svgNS, 'text');
     tipLabel.setAttribute('x', gx(-1)); tipLabel.setAttribute('y', gy(0)-3);
     tipLabel.setAttribute('class', 'cuts-axis-label');
-    tipLabel.textContent = 'кончик';
+    tipLabel.textContent = t('axis.tip');
     svg.appendChild(tipLabel);
     var rootLabel = document.createElementNS(svgNS, 'text');
     rootLabel.setAttribute('x', gx(-1)); rootLabel.setAttribute('y', PAD+9);
     rootLabel.setAttribute('class', 'cuts-axis-label');
-    rootLabel.textContent = 'к корню';
+    rootLabel.textContent = t('axis.root');
     svg.appendChild(rootLabel);
 
     var marksLayer = document.createElementNS(svgNS, 'g');
@@ -1986,7 +2172,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
 
     field.appendChild(svg);
     var hint2 = document.createElement('div'); hint2.className = 'curve-hint';
-    hint2.textContent = 'Клик — новый разрез • тяни — позиция и длина этого разреза • 2 клика — удалить';
+    hint2.textContent = t('hint.splitCutsEditor');
     field.appendChild(hint2);
     wrap.appendChild(field);
   }
@@ -2590,14 +2776,14 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     redoStack.push(snapshotState());
     var snap = undoStack.pop();
     restoreState(snap);
-    showToast('Отменено', null, 1200);
+    showToast(t('toast.undone'), null, 1200);
   }
   function redo(){
     if(!redoStack.length) return;
     undoStack.push(snapshotState());
     var snap = redoStack.pop();
     restoreState(snap);
-    showToast('Повторено', null, 1200);
+    showToast(t('toast.redone'), null, 1200);
   }
 
   /* ============================================================
@@ -2649,7 +2835,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   function setSymmetryEnabled(val){
     symmetryEnabled = val;
     symmetryIndicatorEl.classList.toggle('on', symmetryEnabled);
-    symmetryTextEl.textContent = 'Симметрия X: ' + (symmetryEnabled ? 'вкл' : 'выкл');
+    symmetryTextEl.textContent = t('indicator.symmetry.label') + ': ' + (symmetryEnabled ? t('state.on') : t('state.off'));
   }
   symmetryIndicatorEl.addEventListener('click', function(){ setSymmetryEnabled(!symmetryEnabled); });
 
@@ -2658,7 +2844,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   function setMagnetEnabled(val){
     magnetEnabled = val;
     magnetIndicatorEl.classList.toggle('on', magnetEnabled);
-    magnetTextEl.textContent = 'Магнит: ' + (magnetEnabled ? 'вкл' : 'выкл');
+    magnetTextEl.textContent = t('indicator.magnet.label') + ': ' + (magnetEnabled ? t('state.on') : t('state.off'));
   }
   magnetIndicatorEl.addEventListener('click', function(){ setMagnetEnabled(!magnetEnabled); });
 
@@ -2667,7 +2853,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   function setMeshDirectionEnabled(val){
     meshDirectionEnabled = val;
     directionIndicatorEl.classList.toggle('on', meshDirectionEnabled);
-    directionTextEl.textContent = 'Направление: ' + (meshDirectionEnabled ? 'вкл' : 'выкл');
+    directionTextEl.textContent = t('indicator.direction.label') + ': ' + (meshDirectionEnabled ? t('state.on') : t('state.off'));
     locks.forEach(function(l){ regenerateLockGeometry(l); });
   }
   directionIndicatorEl.addEventListener('click', function(){ setMeshDirectionEnabled(!meshDirectionEnabled); });
@@ -2709,31 +2895,21 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   }
 
   function updateHint(){
-    var t;
+    var txt;
     if(activeBrush === 'move'){
-      t = selectedLockId
-        ? 'Тяни по пряди — кисть «Мув» локально сдвигает ближайший пучок волосков'
-        : 'Выбери прядь, затем тяни по ней кистью';
+      txt = selectedLockId ? t('hint.brush.selected') : t('hint.brush.none');
     } else if(mode === 'add'){
-      t = draftPoints.length === 0
-        ? 'Клик по голове — поставить первую точку пряди'
-        : 'Клик — добавить точку (' + draftPoints.length + ') • Enter — завершить • Backspace — отменить точку';
+      txt = draftPoints.length === 0 ? t('hint.add.start') : t('hint.add.continue', {n: draftPoints.length});
     } else if(mode === 'edit'){
-      t = selectedLockId
-        ? 'Тяни точку, чтобы сместить • Двойной клик — удалить точку • Розовая точка на линии — добавить точку • Клик по голове — удлинить прядь'
-        : 'Выбери прядь слева или кликни по ней в сцене';
+      txt = selectedLockId ? t('hint.edit.selected') : t('hint.selectPrompt');
     } else if(mode === 'trim'){
-      t = selectedLockId
-        ? 'Клик по точке — обрезать прядь в этом месте (всё дальше будет удалено)'
-        : 'Выбери прядь слева или кликни по ней в сцене';
+      txt = selectedLockId ? t('hint.trim.selected') : t('hint.selectPrompt');
     } else if(mode === 'rotate'){
-      t = selectedLockId
-        ? 'Тяни вокруг корня пряди (фиолетовое кольцо) — вращение сечения'
-        : 'Выбери прядь слева или кликни по ней в сцене';
+      txt = selectedLockId ? t('hint.rotate.selected') : t('hint.selectPrompt');
     } else {
-      t = 'Вращай камеру мышью (ПКМ — панорама, колесо — зум) • ЛКМ по пряди — выбрать';
+      txt = t('hint.view');
     }
-    hintTextEl.textContent = t;
+    hintTextEl.textContent = txt;
   }
 
   Array.prototype.forEach.call(toolbarEl.querySelectorAll('.tool-btn'), function(btn){
@@ -2811,7 +2987,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       })
     };
     downloadBlob(JSON.stringify(project), 'lokon-project.json', 'application/json');
-    showToast('Проект сохранён', 'success');
+    showToast(t('toast.projectSaved'), 'success');
   }
 
   function loadProject(jsonText){
@@ -2819,7 +2995,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     try{
       project = JSON.parse(jsonText);
     } catch(err){
-      showToast('Файл проекта повреждён или не JSON', 'error', 5000);
+      showToast(t('toast.projectFileCorrupt'), 'error', 5000);
       return;
     }
     try{
@@ -2851,9 +3027,9 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       renderSidebar();
       renderReferenceList();
       updateToolbarState();
-      showToast('Проект загружен: ' + (project.locks||[]).length + ' прядей, ' + (project.references||[]).length + ' референсов', 'success');
+      showToast(t('toast.projectLoaded', {locks: (project.locks||[]).length, refs: (project.references||[]).length}), 'success');
     } catch(err){
-      showToast('Ошибка при восстановлении проекта: ' + err.message, 'error', 6000);
+      showToast(t('toast.projectRestoreError', {msg: err.message}), 'error', 6000);
     }
   }
 
@@ -2877,14 +3053,14 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   }
 
   document.getElementById('export-btn').addEventListener('click', function(){
-    if(!locks.length){ showToast('Нет ни одной пряди для экспорта', 'error'); return; }
+    if(!locks.length){ showToast(t('toast.noStrandsToExport'), 'error'); return; }
     try{
       var result = LokonFBXExport.exportMeshesToOBJ(gatherMeshesData(), 'lokon-hair.mtl');
       downloadBlob(result.obj, 'lokon-hair.obj', 'text/plain');
       setTimeout(function(){ downloadBlob(result.mtl, 'lokon-hair.mtl', 'text/plain'); }, 300);
-      showToast('Экспортировано: lokon-hair.obj + lokon-hair.mtl (с UV и цветом, положи оба файла в одну папку)', 'success', 5000);
+      showToast(t('toast.exported'), 'success', 5000);
     } catch(err){
-      showToast('Ошибка экспорта OBJ: ' + err.message, 'error');
+      showToast(t('toast.exportError', {msg: err.message}), 'error');
     }
   });
 
@@ -2923,13 +3099,13 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     fbxFileInput.value = '';
     if(!file) return;
     var isObj = /\.obj$/i.test(file.name);
-    showToast('Импортирую голову из ' + file.name + '…', null, 8000);
+    showToast(t('toast.importingHead', {name: file.name}), null, 8000);
     var reader = new FileReader();
     reader.onload = function(){
       setTimeout(function(){ processImportedHead(reader.result, file.name, isObj); }, 10);
     };
     reader.onerror = function(){
-      showToast('Не удалось прочитать файл', 'error');
+      showToast(t('toast.readFileError'), 'error');
     };
     if(isObj) reader.readAsText(file);
     else reader.readAsArrayBuffer(file);
@@ -2939,13 +3115,13 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     try{
       var result = isObj ? LokonFBXParse.importOBJ(data) : LokonFBXParse.importFBX(data);
       if(!result.positions.length || !result.indices.length){
-        showToast('В файле не найдено полигональной сетки', 'error');
+        showToast(t('toast.noMeshInFile'), 'error');
         return;
       }
       applyImportedHeadGeometry(result.positions, result.indices);
-      showToast('Голова импортирована: ' + filename + ' (' + Math.round(result.positions.length/3) + ' точек)', 'success');
+      showToast(t('toast.headImported', {name: filename, n: Math.round(result.positions.length/3)}), 'success');
     } catch(err){
-      showToast('Ошибка чтения файла: ' + err.message, 'error', 5000);
+      showToast(t('toast.readFileErrorWithMsg', {msg: err.message}), 'error', 5000);
     }
   }
 
@@ -2956,11 +3132,11 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     var files = Array.prototype.slice.call(refFileInput.files || []);
     refFileInput.value = '';
     if(!files.length) return;
-    showToast('Импортирую референсы (' + files.length + ')…', null, 8000);
+    showToast(t('toast.importingRefs', {n: files.length}), null, 8000);
     // process sequentially so multiple large FBX files don't jam the reader
     function next(i){
       if(i >= files.length){
-        showToast('Референсы импортированы: ' + files.length, 'success');
+        showToast(t('toast.refsImported', {n: files.length}), 'success');
         return;
       }
       var file = files[i];
@@ -2973,15 +3149,15 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
             if(result.positions.length && result.indices.length){
               addReferenceObject(result.positions, result.indices, file.name);
             } else {
-              showToast('В файле ' + file.name + ' не найдено полигональной сетки', 'error');
+              showToast(t('toast.noMeshInFileNamed', {name: file.name}), 'error');
             }
           } catch(err){
-            showToast('Ошибка в файле ' + file.name + ': ' + err.message, 'error', 5000);
+            showToast(t('toast.refFileError', {name: file.name, msg: err.message}), 'error', 5000);
           }
           next(i+1);
         }, 10);
       };
-      reader.onerror = function(){ showToast('Не удалось прочитать ' + file.name, 'error'); next(i+1); };
+      reader.onerror = function(){ showToast(t('toast.readFileErrorNamed', {name: file.name}), 'error'); next(i+1); };
       if(isObj) reader.readAsText(file);
       else reader.readAsArrayBuffer(file);
     }
@@ -2996,12 +3172,12 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     var file = projectFileInput.files && projectFileInput.files[0];
     projectFileInput.value = '';
     if(!file) return;
-    showToast('Загружаю проект…', null, 8000);
+    showToast(t('toast.loadingProject'), null, 8000);
     var reader = new FileReader();
     reader.onload = function(){
       setTimeout(function(){ loadProject(reader.result); }, 10);
     };
-    reader.onerror = function(){ showToast('Не удалось прочитать файл проекта', 'error'); };
+    reader.onerror = function(){ showToast(t('toast.readProjectFileError'), 'error'); };
     reader.readAsText(file);
   });
 
@@ -3025,7 +3201,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       if(lock.mirrorPairId && getLock(lock.mirrorPairId)){
         var badge = document.createElement('button');
         badge.className = 'mirror-badge' + (lock.mirrorLinked ? ' linked' : '');
-        badge.title = lock.mirrorLinked ? 'Зеркальная связь включена — клик, чтобы отключить' : 'Зеркальная связь отключена — клик, чтобы включить';
+        badge.title = lock.mirrorLinked ? t('lock.mirrorLinked.on') : t('lock.mirrorLinked.off');
         badge.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="5.5"/></svg>';
         badge.addEventListener('click', function(e){
           e.stopPropagation();
@@ -3064,7 +3240,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
         '<span class="lock-item-name">'+escapeHtml(ref.name)+'</span>';
       var delBtn = document.createElement('button');
       delBtn.className = 'mirror-badge';
-      delBtn.title = 'Удалить референс';
+      delBtn.title = t('ref.delete.title');
       delBtn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l8 8M12 4l-8 8"/></svg>';
       delBtn.addEventListener('click', function(e){
         e.stopPropagation();
@@ -3098,14 +3274,14 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       field.appendChild(row); field.appendChild(input);
       wrap.appendChild(field);
     }
-    posSlider('Позиция X', 'x');
-    posSlider('Позиция Y', 'y');
-    posSlider('Позиция Z', 'z');
+    posSlider(t('field.positionX'), 'x');
+    posSlider(t('field.positionY'), 'y');
+    posSlider(t('field.positionZ'), 'z');
 
     function scaleSlider(){
       var field = document.createElement('div'); field.className = 'field';
       var row = document.createElement('div'); row.className = 'field-label-row';
-      var label = document.createElement('span'); label.className = 'field-label'; label.textContent = 'Масштаб';
+      var label = document.createElement('span'); label.className = 'field-label'; label.textContent = t('field.scale');
       var val = document.createElement('span'); val.className = 'field-value'; val.textContent = ref.mesh.scale.x.toFixed(2);
       row.appendChild(label); row.appendChild(val);
       var input = document.createElement('input'); input.type = 'range';
@@ -3121,12 +3297,12 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     scaleSlider();
 
     var visRow = document.createElement('div'); visRow.className = 'field-label-row split-toggle-row';
-    var visLabel = document.createElement('span'); visLabel.className = 'field-label'; visLabel.textContent = 'Видимость';
+    var visLabel = document.createElement('span'); visLabel.className = 'field-label'; visLabel.textContent = t('field.visibility');
     var visToggle = document.createElement('button'); visToggle.className = 'curve-reset-btn';
-    visToggle.textContent = ref.mesh.visible ? 'Скрыть' : 'Показать';
+    visToggle.textContent = ref.mesh.visible ? t('action.hide') : t('action.show');
     visToggle.addEventListener('click', function(){
       ref.mesh.visible = !ref.mesh.visible;
-      visToggle.textContent = ref.mesh.visible ? 'Скрыть' : 'Показать';
+      visToggle.textContent = ref.mesh.visible ? t('action.hide') : t('action.show');
     });
     visRow.appendChild(visLabel); visRow.appendChild(visToggle);
     wrap.appendChild(visRow);
@@ -3146,7 +3322,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       empty.className = 'empty-state';
       empty.innerHTML =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 20c3-9 6-13 8-13s2 5 4 5 3-3.5 5-2.5"/></svg>' +
-        '<p>Выбери прядь слева или нажми «Прядь» на панели сверху, чтобы нарисовать новую кривую на голове.</p>';
+        '<p>' + escapeHtml(t('empty.selectStrand')) + '</p>';
       propertiesRootEl.appendChild(empty);
       return;
     }
@@ -3167,7 +3343,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     var typeRow = document.createElement('div');
     typeRow.className = 'prop-type-row';
     var typeLabel = document.createElement('span');
-    typeLabel.className = 'field-label'; typeLabel.textContent = 'Тип волос';
+    typeLabel.className = 'field-label'; typeLabel.textContent = t('field.hairType');
     var typeSelect = document.createElement('select');
     typeSelect.className = 'hair-type-select';
     HAIR_TYPE_ORDER.forEach(function(key){
@@ -3214,23 +3390,23 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       wrap.appendChild(field);
     }
 
-    makeSlider('Ширина', 0.005, 0.35, 0.005, lock.thickness, function(v){ return v.toFixed(3); }, function(v){
+    makeSlider(t('field.width'), 0.005, 0.35, 0.005, lock.thickness, function(v){ return v.toFixed(3); }, function(v){
       lock.thickness = v; regenerateLockGeometry(lock);
     });
-    makeSlider('Толщина', 0.001, 0.15, 0.002, lock.depth, function(v){ return v.toFixed(3); }, function(v){
+    makeSlider(t('field.thickness'), 0.001, 0.15, 0.002, lock.depth, function(v){ return v.toFixed(3); }, function(v){
       lock.depth = v; regenerateLockGeometry(lock);
     });
-    makeSlider('Отступ от меша', -0.2, 0.2, 0.005, lock.meshOffset || 0, function(v){ return v.toFixed(3); }, function(v){
+    makeSlider(t('field.meshOffset'), -0.2, 0.2, 0.005, lock.meshOffset || 0, function(v){ return v.toFixed(3); }, function(v){
       lock.meshOffset = v; regenerateLockGeometry(lock);
     });
-    makeSlider('Вращение', -180, 180, 1, (lock.roll || 0) * 180/Math.PI, function(v){ return Math.round(v) + '°'; }, function(v){
+    makeSlider(t('field.rotation'), -180, 180, 1, (lock.roll || 0) * 180/Math.PI, function(v){ return Math.round(v) + '°'; }, function(v){
       lock.roll = v * Math.PI/180; regenerateLockGeometry(lock);
     });
     buildThicknessCurveEditor(lock, wrap);
 
     if(lock.hairType === 'blunt'){
       var splitRow = document.createElement('div'); splitRow.className = 'field-label-row split-toggle-row';
-      var splitLabel = document.createElement('span'); splitLabel.className = 'field-label'; splitLabel.textContent = 'Секущиеся концы';
+      var splitLabel = document.createElement('span'); splitLabel.className = 'field-label'; splitLabel.textContent = t('field.splitEnds');
       var splitToggle = document.createElement('input'); splitToggle.type = 'checkbox'; splitToggle.className = 'split-toggle';
       splitToggle.checked = !!lock.splitEnds;
       splitRow.appendChild(splitLabel); splitRow.appendChild(splitToggle);
@@ -3245,30 +3421,30 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       if(lock.splitEnds){
         if(!lock.splitCuts || !lock.splitCuts.length) lock.splitCuts = [{u:-0.42, len:0.4}, {u:-0.24, len:0.4}];
         buildSplitCutsEditor(lock, wrap);
-        makeSlider('Ширина щели', 0.02, 0.3, 0.01, lock.splitGapWidth, function(v){ return v.toFixed(2); }, function(v){
+        makeSlider(t('field.splitGapWidth'), 0.02, 0.3, 0.01, lock.splitGapWidth, function(v){ return v.toFixed(2); }, function(v){
           lock.splitGapWidth = v; regenerateLockGeometry(lock);
         });
       }
     }
 
-    makeSlider('Густота', 1, 16, 1, lock.density, function(v){ return String(Math.round(v)); }, function(v){
+    makeSlider(t('field.density'), 1, 16, 1, lock.density, function(v){ return String(Math.round(v)); }, function(v){
       lock.density = Math.round(v); regenerateLockGeometry(lock);
       var badge = lockListEl.querySelector('#listname-'+lock.id);
       if(badge && badge.parentElement) badge.parentElement.querySelector('.lock-item-count').textContent = lock.density + '×';
     });
-    makeSlider('Разброс', 0, 0.9, 0.02, lock.spread, function(v){ return v.toFixed(2); }, function(v){
+    makeSlider(t('field.spread'), 0, 0.9, 0.02, lock.spread, function(v){ return v.toFixed(2); }, function(v){
       lock.spread = v; regenerateLockGeometry(lock);
     });
-    makeSlider('Разнообразие длины', 0, 0.85, 0.02, lock.lengthVariation, function(v){ return v.toFixed(2); }, function(v){
+    makeSlider(t('field.lengthVariation'), 0, 0.85, 0.02, lock.lengthVariation, function(v){ return v.toFixed(2); }, function(v){
       lock.lengthVariation = v; regenerateLockGeometry(lock);
     });
-    makeSlider('Волнистость', 0, 1, 0.02, lock.waviness, function(v){ return v.toFixed(2); }, function(v){
+    makeSlider(t('field.waviness'), 0, 1, 0.02, lock.waviness, function(v){ return v.toFixed(2); }, function(v){
       lock.waviness = v; regenerateLockGeometry(lock);
     });
 
     var delBtn = document.createElement('button');
     delBtn.className = 'delete-lock-btn';
-    delBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0l1 12a1 1 0 001 1h6a1 1 0 001-1l1-12"/></svg> Удалить прядь';
+    delBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0l1 12a1 1 0 001 1h6a1 1 0 001-1l1-12"/></svg> ' + escapeHtml(t('action.deleteStrand'));
     delBtn.addEventListener('click', function(){ deleteLock(lock.id); });
     wrap.appendChild(delBtn);
 
@@ -3599,8 +3775,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var polycountEl = document.getElementById('polycount');
   var lastPolycount = -1;
   function formatPolycount(n){
-    if(n >= 1000) return (n/1000).toFixed(1).replace(/\.0$/,'') + 'k полигонов волос';
-    return n + ' полигонов волос';
+    if(n >= 1000) return t('polycount.thousands', {n: (n/1000).toFixed(1).replace(/\.0$/,'')});
+    return t('polycount.under1k', {n: n});
   }
   function computeTotalTriangles(){
     var total = 0;
@@ -3636,6 +3812,22 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   ]);
   setMode('view');
   selectLock(demoLock.id);
+
+  /* ---------------- language switch ---------------- */
+  function refreshAllUIText(){
+    symmetryTextEl.textContent = t('indicator.symmetry.label') + ': ' + (symmetryEnabled ? t('state.on') : t('state.off'));
+    magnetTextEl.textContent = t('indicator.magnet.label') + ': ' + (magnetEnabled ? t('state.on') : t('state.off'));
+    directionTextEl.textContent = t('indicator.direction.label') + ': ' + (meshDirectionEnabled ? t('state.on') : t('state.off'));
+    updateHint();
+    renderSidebar();
+    renderReferenceList();
+    polycountEl.textContent = formatPolycount(lastPolycount < 0 ? 0 : lastPolycount);
+  }
+  onLangChange(refreshAllUIText);
+  document.getElementById('lang-indicator').addEventListener('click', function(){
+    setLang(LOKON_LANG === 'ru' ? 'en' : 'ru');
+  });
+  setLang(LOKON_LANG);
 
 })();
 </script>
