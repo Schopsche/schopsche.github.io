@@ -155,7 +155,7 @@
   }
   #hintbar .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;}
 
-  #symmetry-indicator, #magnet-indicator, #direction-indicator, #lang-indicator{
+  #symmetry-indicator, #magnet-indicator, #direction-indicator, #lang-indicator, #aa-indicator{
     position:absolute;left:20px;bottom:64px;z-index:20;
     display:flex;align-items:center;gap:7px;
     background:rgba(27,23,32,0.85);border:1px solid var(--border);
@@ -164,13 +164,14 @@
     cursor:pointer;backdrop-filter:blur(6px);
     transition:color .15s ease, border-color .15s ease;
   }
-  #symmetry-indicator svg, #magnet-indicator svg, #direction-indicator svg, #lang-indicator svg{width:15px;height:15px;flex:none;}
-  #symmetry-indicator:hover, #magnet-indicator:hover, #direction-indicator:hover, #lang-indicator:hover{border-color:var(--text-muted);color:var(--text);}
-  #symmetry-indicator.on, #magnet-indicator.on, #direction-indicator.on{color:#7cf0a8;border-color:rgba(124,240,168,0.45);}
-  #symmetry-indicator.on svg, #magnet-indicator.on svg, #direction-indicator.on svg{filter:drop-shadow(0 0 3px rgba(124,240,168,0.5));}
+  #symmetry-indicator svg, #magnet-indicator svg, #direction-indicator svg, #lang-indicator svg, #aa-indicator svg{width:15px;height:15px;flex:none;}
+  #symmetry-indicator:hover, #magnet-indicator:hover, #direction-indicator:hover, #lang-indicator:hover, #aa-indicator:hover{border-color:var(--text-muted);color:var(--text);}
+  #symmetry-indicator.on, #magnet-indicator.on, #direction-indicator.on, #aa-indicator.on{color:#7cf0a8;border-color:rgba(124,240,168,0.45);}
+  #symmetry-indicator.on svg, #magnet-indicator.on svg, #direction-indicator.on svg, #aa-indicator.on svg{filter:drop-shadow(0 0 3px rgba(124,240,168,0.5));}
   #magnet-indicator{bottom:110px;}
   #direction-indicator{bottom:156px;}
   #lang-indicator{bottom:202px;}
+  #aa-indicator{bottom:248px;}
   #lang-text{font-weight:600;letter-spacing:0.04em;}
 
   #polycount{
@@ -199,6 +200,12 @@
     letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);
     margin:4px 0 10px;
   }
+  .side-heading.collapsible-heading{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;}
+  .side-heading.collapsible-heading:hover{color:var(--text-muted);}
+  .collapse-chevron{width:14px;height:14px;flex:none;transition:transform .15s ease;}
+  .collapsible-heading.collapsed .collapse-chevron{transform:rotate(-90deg);}
+  .collapsible-body{overflow:hidden;}
+  .collapsible-body.collapsed{display:none;}
 
   #lock-list{list-style:none;margin:0 0 22px;padding:0;display:flex;flex-direction:column;gap:4px;}
   .lock-item{
@@ -256,6 +263,8 @@
   .field-label-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
   .field-label{font-size:12px;color:var(--text-muted);font-weight:500;}
   .field-value{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--accent);}
+  .tex-checkbox-row{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted);margin-top:8px;cursor:pointer;}
+  .tex-checkbox-row input{accent-color:var(--accent);cursor:pointer;}
   input[type=range]{
     -webkit-appearance:none;width:100%;height:4px;border-radius:2px;
     background:var(--bg-elevated-2);outline:none;
@@ -339,6 +348,7 @@
     #magnet-indicator{bottom:calc(46vh + 106px);}
     #direction-indicator{bottom:calc(46vh + 152px);}
     #lang-indicator{bottom:calc(46vh + 198px);}
+    #aa-indicator{bottom:calc(46vh + 244px);}
     #brushbar{left:8px;}
     .brush-btn{width:38px;height:38px;}
   }
@@ -416,16 +426,16 @@
   <div id="toast"></div>
 
   <aside id="brushbar">
-    <button class="brush-btn" data-brush="move" title="Мув — локальный сдвиг мелких прядок" data-i18n-title="brush.move.title">
+    <button class="brush-btn" data-brush="move" title="Мув (Q) — локальный сдвиг мелких прядок" data-i18n-title="brush.move.title">
       <img src="https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/images/big_move.png" alt="Мув">
     </button>
-    <button class="brush-btn" data-brush="single" title="Один волос — выделить и подвинуть один волосок" data-i18n-title="brush.single.title">
+    <button class="brush-btn" data-brush="single" title="Один волос (W) — выделить и подвинуть один волосок" data-i18n-title="brush.single.title">
       <img src="https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/images/single_hair.png" alt="Один волос">
     </button>
-    <button class="brush-btn" data-brush="sculpt" title="Лепка — мять форму одного волоса в радиусе кисти" data-i18n-title="brush.sculpt.title">
+    <button class="brush-btn" data-brush="sculpt" title="Лепка (E) — мять форму одного волоса в радиусе кисти" data-i18n-title="brush.sculpt.title">
       <img src="https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/images/sculpt.png" alt="Лепка">
     </button>
-    <button class="brush-btn" data-brush="smooth" title="Смус — сглаживает лепку на одном волосе в радиусе кисти" data-i18n-title="brush.smooth.title">
+    <button class="brush-btn" data-brush="smooth" title="Смус (R) — сглаживает лепку на одном волосе в радиусе кисти" data-i18n-title="brush.smooth.title">
       <img src="https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/images/smooth.png" alt="Смус">
     </button>
     <div class="brush-options" id="brush-options">
@@ -458,6 +468,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v4M12 12l4-2"/></svg>
     <span id="direction-text">Направление: вкл</span>
   </button>
+  <button id="aa-indicator" class="on" title="Сглаживание (antialiasing)" data-i18n-title="indicator.aa.title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18L12 4l8 14"/><path d="M7.5 12h9"/></svg>
+    <span id="aa-text">Сглаживание: вкл</span>
+  </button>
   <button id="symmetry-indicator" title="Симметрия X (горячая клавиша X)" data-i18n-title="indicator.symmetry.title">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M7 8l-3 4 3 4M17 8l3 4-3 4"/></svg>
     <span id="symmetry-text">Симметрия X: выкл</span>
@@ -470,6 +484,42 @@
 
   <aside id="sidebar">
     <div id="sidebar-scroll">
+      <div class="side-heading collapsible-heading" id="hair-texture-heading">
+        <span data-i18n="heading.hairTexture">Текстура волос</span>
+        <svg class="collapse-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="collapsible-body" id="hair-texture-body">
+        <div class="field">
+          <div class="field-label-row">
+            <span class="field-label" data-i18n="field.texHue">Оттенок</span>
+            <span class="field-value" id="tex-hue-value">0°</span>
+          </div>
+          <input type="range" id="tex-hue-slider" min="-180" max="180" step="1" value="0">
+        </div>
+        <div class="field">
+          <div class="field-label-row">
+            <span class="field-label" data-i18n="field.texLightness">Светлота</span>
+            <span class="field-value" id="tex-lightness-value">0.00</span>
+          </div>
+          <input type="range" id="tex-lightness-slider" min="-1" max="1" step="0.02" value="0">
+        </div>
+        <div class="field">
+          <div class="field-label-row">
+            <span class="field-label" data-i18n="field.hairAlphaStrength">Сила прозрачности</span>
+            <span class="field-value" id="tex-alpha-strength-value">1.00</span>
+          </div>
+          <input type="range" id="tex-alpha-strength-slider" min="0" max="1" step="0.02" value="1">
+          <label class="tex-checkbox-row"><input type="checkbox" id="tex-alpha-enabled-toggle" checked><span data-i18n="field.enabled">Включено</span></label>
+        </div>
+        <div class="field">
+          <div class="field-label-row">
+            <span class="field-label" data-i18n="field.hairGradientRange">Дальность градиента</span>
+            <span class="field-value" id="tex-gradient-range-value">1.00</span>
+          </div>
+          <input type="range" id="tex-gradient-range-slider" min="0" max="2" step="0.02" value="1">
+          <label class="tex-checkbox-row"><input type="checkbox" id="tex-gradient-enabled-toggle" checked><span data-i18n="field.enabled">Включено</span></label>
+        </div>
+      </div>
       <div class="side-heading"><span data-i18n="heading.strands">Пряди</span> <span id="lock-total-count" style="color:var(--text-dim);font-weight:500;"></span></div>
       <ul id="lock-list"></ul>
       <div id="properties-root"></div>
@@ -499,20 +549,21 @@ var LOKON_I18N = {
     'btn.save.title': 'Сохранить проект (все пряди, настройки, референсы)', 'btn.save.label': 'Сохранить',
     'btn.load.title': 'Загрузить проект', 'btn.load.label': 'Загрузить',
     'btn.export.title': 'Экспорт модели прядей в OBJ (+MTL с цветом)', 'btn.export.label': 'Экспорт .obj',
-    'brush.move.title': 'Мув — локальный сдвиг мелких прядок', 'brush.radius.label': 'Радиус', 'brush.strength.label': 'Сила',
-    'brush.single.title': 'Один волос — выделить и подвинуть один волосок',
+    'brush.move.title': 'Мув (Q) — локальный сдвиг мелких прядок', 'brush.radius.label': 'Радиус', 'brush.strength.label': 'Сила',
+    'brush.single.title': 'Один волос (W) — выделить и подвинуть один волосок',
     'brush.detachRoot.label': 'Открепить корень',
     'brush.detachRoot.title': 'Двигать волос целиком, включая корень',
-    'brush.sculpt.title': 'Лепка — мять форму одного волоса в радиусе кисти',
-    'brush.smooth.title': 'Смус — сглаживает лепку на одном волосе в радиусе кисти',
+    'brush.sculpt.title': 'Лепка (E) — мять форму одного волоса в радиусе кисти',
+    'brush.smooth.title': 'Смус (R) — сглаживает лепку на одном волосе в радиусе кисти',
     'draft.cancel': 'Отмена (Esc)', 'draft.finish': 'Готово (Enter)',
     'indicator.magnet.title': 'Магнит к голове (горячая клавиша C)',
     'indicator.direction.title': 'Ориентация волос по мешу при редактировании',
     'indicator.symmetry.title': 'Симметрия X (горячая клавиша X)',
-    'heading.strands': 'Пряди', 'heading.references': 'Референсы',
+    'indicator.aa.title': 'Сглаживание (antialiasing)',
+    'heading.strands': 'Пряди', 'heading.references': 'Референсы', 'heading.hairTexture': 'Текстура волос',
     'lang.toggle.title': 'Переключить язык интерфейса',
     'state.on': 'вкл', 'state.off': 'выкл',
-    'indicator.magnet.label': 'Магнит', 'indicator.direction.label': 'Направление', 'indicator.symmetry.label': 'Симметрия X',
+    'indicator.magnet.label': 'Магнит', 'indicator.direction.label': 'Направление', 'indicator.symmetry.label': 'Симметрия X', 'indicator.aa.label': 'Сглаживание',
     'hint.view': 'Вращай камеру мышью (ПКМ — панорама, колесо — зум) • ЛКМ по пряди — выбрать',
     'hint.brush.selected': 'Тяни по пряди — кисть «Мув» локально сдвигает ближайший пучок волосков',
     'hint.brush.none': 'Выбери прядь, затем тяни по ней кистью',
@@ -556,8 +607,9 @@ var LOKON_I18N = {
     'field.scale': 'Масштаб', 'field.visibility': 'Видимость',
     'action.hide': 'Скрыть', 'action.show': 'Показать',
     'empty.selectStrand': 'Выбери прядь слева или нажми «Прядь» на панели сверху, чтобы нарисовать новую кривую на голове.',
-    'field.hairType': 'Тип волос', 'hairType.natural': 'Естественные', 'hairType.blunt': 'Обрезанные',
-    'field.width': 'Ширина', 'field.thickness': 'Толщина', 'field.meshOffset': 'Отступ от меша', 'field.rotation': 'Вращение',
+    'field.hairType': 'Тип волос', 'hairType.natural': 'Естественные', 'hairType.blunt': 'Обрезанные', 'hairType.cards': 'Карточки',
+    'field.width': 'Ширина', 'field.thickness': 'Толщина', 'field.meshOffset': 'Отступ от меша', 'field.rotation': 'Вращение', 'field.texHue': 'Оттенок', 'field.texLightness': 'Светлота',
+    'field.hairAlphaStrength': 'Сила прозрачности', 'field.hairGradientRange': 'Дальность градиента', 'field.enabled': 'Включено',
     'field.splitEnds': 'Секущиеся концы', 'field.splitGapWidth': 'Ширина щели',
     'field.density': 'Густота', 'field.spread': 'Разброс', 'field.lengthVariation': 'Разнообразие длины', 'field.waviness': 'Волнистость',
     'action.deleteStrand': 'Удалить прядь',
@@ -586,20 +638,21 @@ var LOKON_I18N = {
     'btn.save.title': 'Save project (all strands, settings, references)', 'btn.save.label': 'Save',
     'btn.load.title': 'Load project', 'btn.load.label': 'Load',
     'btn.export.title': 'Export strand model to OBJ (+MTL with color)', 'btn.export.label': 'Export .obj',
-    'brush.move.title': 'Move — local shift of small strand clumps', 'brush.radius.label': 'Radius', 'brush.strength.label': 'Strength',
-    'brush.single.title': 'Single hair — select and move one strand',
+    'brush.move.title': 'Move (Q) — local shift of small strand clumps', 'brush.radius.label': 'Radius', 'brush.strength.label': 'Strength',
+    'brush.single.title': 'Single hair (W) — select and move one strand',
     'brush.detachRoot.label': 'Detach root',
     'brush.detachRoot.title': 'Move the whole hair, root included',
-    'brush.sculpt.title': 'Sculpt — knead the shape of one hair within the brush radius',
-    'brush.smooth.title': 'Smooth — relaxes sculpted bumps on one hair within the brush radius',
+    'brush.sculpt.title': 'Sculpt (E) — knead the shape of one hair within the brush radius',
+    'brush.smooth.title': 'Smooth (R) — relaxes sculpted bumps on one hair within the brush radius',
     'draft.cancel': 'Cancel (Esc)', 'draft.finish': 'Done (Enter)',
     'indicator.magnet.title': 'Magnet to head (hotkey C)',
     'indicator.direction.title': 'Orient hair to mesh while editing',
     'indicator.symmetry.title': 'X symmetry (hotkey X)',
-    'heading.strands': 'Strands', 'heading.references': 'References',
+    'indicator.aa.title': 'Antialiasing',
+    'heading.strands': 'Strands', 'heading.references': 'References', 'heading.hairTexture': 'Hair texture',
     'lang.toggle.title': 'Switch interface language',
     'state.on': 'On', 'state.off': 'Off',
-    'indicator.magnet.label': 'Magnet', 'indicator.direction.label': 'Direction', 'indicator.symmetry.label': 'X symmetry',
+    'indicator.magnet.label': 'Magnet', 'indicator.direction.label': 'Direction', 'indicator.symmetry.label': 'X symmetry', 'indicator.aa.label': 'Antialiasing',
     'hint.view': 'Rotate the camera with the mouse (RMB — pan, wheel — zoom) • LMB on a strand — select',
     'hint.brush.selected': 'Drag over a strand — the Move brush locally shifts the nearest tuft',
     'hint.brush.none': 'Select a strand, then drag over it with the brush',
@@ -643,8 +696,9 @@ var LOKON_I18N = {
     'field.scale': 'Scale', 'field.visibility': 'Visibility',
     'action.hide': 'Hide', 'action.show': 'Show',
     'empty.selectStrand': 'Select a strand on the left or click “Strand” on the top panel to draw a new curve on the head.',
-    'field.hairType': 'Hair type', 'hairType.natural': 'Natural', 'hairType.blunt': 'Blunt-cut',
-    'field.width': 'Width', 'field.thickness': 'Thickness', 'field.meshOffset': 'Mesh offset', 'field.rotation': 'Rotation',
+    'field.hairType': 'Hair type', 'hairType.natural': 'Natural', 'hairType.blunt': 'Blunt-cut', 'hairType.cards': 'Cards',
+    'field.width': 'Width', 'field.thickness': 'Thickness', 'field.meshOffset': 'Mesh offset', 'field.rotation': 'Rotation', 'field.texHue': 'Hue', 'field.texLightness': 'Lightness',
+    'field.hairAlphaStrength': 'Alpha strength', 'field.hairGradientRange': 'Gradient reach', 'field.enabled': 'Enabled',
     'field.splitEnds': 'Split ends', 'field.splitGapWidth': 'Gap width',
     'field.density': 'Density', 'field.spread': 'Spread', 'field.lengthVariation': 'Length variation', 'field.waviness': 'Waviness',
     'action.deleteStrand': 'Delete strand',
@@ -1417,10 +1471,15 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
 
   var camera = new THREE.PerspectiveCamera(42, window.innerWidth/window.innerHeight, 0.05, 100);
 
-  var renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.outputEncoding = THREE.sRGBEncoding;
+  var antialiasEnabled = true;
+  function createHairRenderer(antialiasOn){
+    var r = new THREE.WebGLRenderer({antialias: antialiasOn});
+    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    r.setSize(window.innerWidth, window.innerHeight);
+    r.outputEncoding = THREE.sRGBEncoding;
+    return r;
+  }
+  var renderer = createHairRenderer(antialiasEnabled);
   viewportEl.appendChild(renderer.domElement);
 
   // lights
@@ -1445,11 +1504,152 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   function refreshAllLockMaterials(){
     locks.forEach(function(l){ regenerateLockGeometry(l); });
   }
+  // Global hue/lightness shift applied directly to the sampled base-color texture's pixels
+  // (in-shader, HSL space) -- this is a real recolor of the texture itself, not just a weak
+  // multiplicative tint on top, so it reads far stronger than adjusting material.color would.
+  var globalHairHue = 0;        // degrees, -180..180
+  var globalHairLightness = 0;  // offset, -1..1
+  var HAIR_HSL_SHADER_CHUNK = {
+    common: [
+      'uniform float texHueShift;',
+      'uniform float texLightnessShift;',
+      'vec3 lokonRgb2Hsl(vec3 c){',
+      '  float maxc = max(max(c.r,c.g),c.b);',
+      '  float minc = min(min(c.r,c.g),c.b);',
+      '  float l = (maxc+minc)*0.5;',
+      '  float h = 0.0; float s = 0.0;',
+      '  if(maxc != minc){',
+      '    float d = maxc - minc;',
+      '    s = l > 0.5 ? d/(2.0-maxc-minc) : d/(maxc+minc);',
+      '    if(maxc == c.r) h = (c.g-c.b)/d + (c.g < c.b ? 6.0 : 0.0);',
+      '    else if(maxc == c.g) h = (c.b-c.r)/d + 2.0;',
+      '    else h = (c.r-c.g)/d + 4.0;',
+      '    h /= 6.0;',
+      '  }',
+      '  return vec3(h,s,l);',
+      '}',
+      'float lokonHue2rgb(float p, float q, float t){',
+      '  if(t < 0.0) t += 1.0;',
+      '  if(t > 1.0) t -= 1.0;',
+      '  if(t < 1.0/6.0) return p + (q-p)*6.0*t;',
+      '  if(t < 1.0/2.0) return q;',
+      '  if(t < 2.0/3.0) return p + (q-p)*(2.0/3.0 - t)*6.0;',
+      '  return p;',
+      '}',
+      'vec3 lokonHsl2Rgb(vec3 hsl){',
+      '  float h = hsl.x, s = hsl.y, l = hsl.z;',
+      '  if(s == 0.0) return vec3(l);',
+      '  float q = l < 0.5 ? l*(1.0+s) : l+s-l*s;',
+      '  float p = 2.0*l - q;',
+      '  return vec3(lokonHue2rgb(p,q,h+1.0/3.0), lokonHue2rgb(p,q,h), lokonHue2rgb(p,q,h-1.0/3.0));',
+      '}'
+    ].join('\n'),
+    // alpha1: the actual gap/slit cutout pattern (black = transparent, white = opaque).
+    // gradient: where that pattern is allowed to apply (black = applies, white = stays fully opaque).
+    mapFragment: function(includeAlpha){
+      var lines = [
+        '#ifdef USE_MAP',
+        '  vec4 sampledDiffuseColor = texture2D( map, vUv );',
+        '  vec3 lokonHsl = lokonRgb2Hsl(sampledDiffuseColor.rgb);',
+        '  lokonHsl.x = fract(lokonHsl.x + texHueShift);',
+        '  lokonHsl.z = clamp(lokonHsl.z + texLightnessShift, 0.0, 1.0);',
+        '  sampledDiffuseColor.rgb = lokonHsl2Rgb(lokonHsl);',
+        '  diffuseColor.rgb *= sampledDiffuseColor.rgb;'
+      ];
+      if(includeAlpha){
+        lines.push(
+          '  float lokonA1 = texture2D( hairAlpha1Map, vUv ).r;',
+          '  float lokonGrad = texture2D( hairGradientMap, vUv ).r;',
+          '  float lokonGradTerm = hairGradientOn > 0.5 ? (1.0 - lokonGrad) : 1.0;',
+          '  float lokonApplyStrength = clamp(lokonGradTerm * hairGradientRange, 0.0, 1.0);',
+          '  float lokonA1Eff = mix(1.0, lokonA1, hairAlphaStrength);',
+          '  float lokonCombinedAlpha = mix(1.0, lokonA1Eff, lokonApplyStrength);',
+          '  diffuseColor.a *= (hairAlphaOn > 0.5 ? lokonCombinedAlpha : 1.0);'
+        );
+      } else {
+        lines.push('  diffuseColor.a *= sampledDiffuseColor.a;');
+      }
+      lines.push('#endif');
+      return lines.join('\n');
+    }
+  };
+  var hairHslUniformsList = []; // every onBeforeCompile-created shader.uniforms object handed to us so far
+  var hairAlpha1Map = null;
+  var hairGradientMap = null;
+  var hairAlphaOn = true;         // master on/off for the alpha1 cutout pattern
+  var hairAlphaStrength = 1;      // 0..1, how strongly alpha1's holes cut through
+  var hairGradientOn = true;      // master on/off for the gradient's positional masking
+  var hairGradientRange = 1;      // 0..2, how far along the strand the gradient lets the cutout reach
+  function hairAlphaReady(){ return !!(hairAlpha1Map && hairGradientMap); }
+  function applyHairHslShader(material){
+    var bakeAlpha = hairAlphaReady();
+    // Adding the alpha-cutout code changes the fragment shader's actual GLSL text, but three.js's
+    // program cache key is based on material defines, not on what onBeforeCompile injects -- so a
+    // freshly-created material could silently reuse an older, alpha-less compiled program unless
+    // we force a distinct cache key once the alpha textures become available.
+    material.customProgramCacheKey = function(){ return 'lokonHair_' + (bakeAlpha ? 'a1' : 'a0'); };
+    material.onBeforeCompile = function(shader){
+      shader.uniforms.texHueShift = { value: globalHairHue / 360 };
+      shader.uniforms.texLightnessShift = { value: globalHairLightness };
+      var commonAddition = HAIR_HSL_SHADER_CHUNK.common;
+      if(bakeAlpha){
+        shader.uniforms.hairAlpha1Map = { value: hairAlpha1Map };
+        shader.uniforms.hairGradientMap = { value: hairGradientMap };
+        shader.uniforms.hairAlphaOn = { value: hairAlphaOn ? 1 : 0 };
+        shader.uniforms.hairAlphaStrength = { value: hairAlphaStrength };
+        shader.uniforms.hairGradientOn = { value: hairGradientOn ? 1 : 0 };
+        shader.uniforms.hairGradientRange = { value: hairGradientRange };
+        commonAddition += '\nuniform sampler2D hairAlpha1Map;\nuniform sampler2D hairGradientMap;' +
+          '\nuniform float hairAlphaOn;\nuniform float hairAlphaStrength;' +
+          '\nuniform float hairGradientOn;\nuniform float hairGradientRange;';
+      }
+      shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + commonAddition);
+      shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', HAIR_HSL_SHADER_CHUNK.mapFragment(bakeAlpha));
+      hairHslUniformsList.push(shader.uniforms);
+    };
+  }
+  // Sliders mutate every captured uniforms object directly (see wiring further down) rather than
+  // rebuilding materials, since three.js may reuse an already-compiled program for the new
+  // material and skip onBeforeCompile entirely -- baking a fresh value into a material that
+  // never gets recompiled would silently do nothing.
+  function setGlobalHairHsl(hueDeg, lightness){
+    globalHairHue = hueDeg;
+    globalHairLightness = lightness;
+    hairHslUniformsList.forEach(function(u){
+      u.texHueShift.value = globalHairHue / 360;
+      u.texLightnessShift.value = globalHairLightness;
+    });
+  }
+  function setHairAlphaControls(alphaOn, alphaStrength, gradientOn, gradientRange){
+    hairAlphaOn = alphaOn;
+    hairAlphaStrength = alphaStrength;
+    hairGradientOn = gradientOn;
+    hairGradientRange = gradientRange;
+    hairHslUniformsList.forEach(function(u){
+      if(!u.hairAlphaOn) return; // material compiled before alpha textures were ready -- no alpha uniforms to update
+      u.hairAlphaOn.value = hairAlphaOn ? 1 : 0;
+      u.hairAlphaStrength.value = hairAlphaStrength;
+      u.hairGradientOn.value = hairGradientOn ? 1 : 0;
+      u.hairGradientRange.value = hairGradientRange;
+    });
+  }
+  // Shared texture setup: proper trilinear + anisotropic filtering. Without this, fine repeating
+  // detail (like the alpha1 gap pattern) aliases into moire/banding on thin strand geometry seen
+  // at grazing angles -- exactly the horizontal-line artifact this was added to fix.
+  function setupHairTexture(tex){
+    tex.wrapS = THREE.ClampToEdgeWrapping;
+    tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.generateMipmaps = true;
+    tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return tex;
+  }
   hairTextureLoader.load(
     'https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/tex/Lock_1_Base_color.png',
     function(tex){
       tex.encoding = THREE.sRGBEncoding;
-      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      setupHairTexture(tex);
       hairBaseColorMap = tex;
       refreshAllLockMaterials();
     }
@@ -1457,9 +1657,25 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   hairTextureLoader.load(
     'https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/tex/Lock_1_Normal_DirectX.png',
     function(tex){
-      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      setupHairTexture(tex);
       hairNormalMap = tex;
       refreshAllLockMaterials();
+    }
+  );
+  hairTextureLoader.load(
+    'https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/tex/alpha1.png',
+    function(tex){
+      setupHairTexture(tex);
+      hairAlpha1Map = tex;
+      if(hairAlphaReady()) refreshAllLockMaterials();
+    }
+  );
+  hairTextureLoader.load(
+    'https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/tex/gradient.png',
+    function(tex){
+      setupHairTexture(tex);
+      hairGradientMap = tex;
+      if(hairAlphaReady()) refreshAllLockMaterials();
     }
   );
 
@@ -1467,7 +1683,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var headMesh = (function(){
     var geo = new THREE.SphereGeometry(0.86, 40, 32);
     var mat = new THREE.MeshStandardMaterial({
-      color:0x8c8494, transparent:true, opacity:0.4,
+      color:0x554e42, transparent:true, opacity:0.4,
       roughness:0.7, metalness:0.02, side:THREE.DoubleSide
     });
     var mesh = new THREE.Mesh(geo, mat);
@@ -1480,6 +1696,13 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   // Replace the head mesh geometry with an imported one, normalized (centered + scaled)
   // to the tool's working volume so hair-root raycasting and camera framing keep working.
   function applyImportedHeadGeometry(positions, indices){
+    // The imported triangle winding comes in reversed (normals end up pointing inward,
+    // inside-out shading) -- flip each triangle's winding before computing normals.
+    for(var i=0;i+2<indices.length;i+=3){
+      var tmp = indices[i+1];
+      indices[i+1] = indices[i+2];
+      indices[i+2] = tmp;
+    }
     var geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geo.setIndex(new THREE.BufferAttribute(indices, 1));
@@ -1496,7 +1719,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     headMesh.geometry = geo;
     headMesh.scale.set(1,1,1);
     headMesh.position.set(0,0,0);
-    headMesh.material.color.set(0xcfc6bd);
+    headMesh.material.color.set(0x7d715f);
     headMesh.material.opacity = 1;
     headMesh.material.transparent = false;
     headMesh.material.roughness = 0.85;
@@ -1821,9 +2044,14 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       get label(){ return t('hairType.blunt'); },
       curve: function(){ return [{t:0,v:1,type:'spline'},{t:0.88,v:0.94,type:'spline'},{t:1,v:0.88,type:'spline'}]; },
       defaults: { density: 1, spread: 0, lengthVariation: 0, waviness: 0, depth: 0.007 }
+    },
+    cards: {
+      get label(){ return t('hairType.cards'); },
+      curve: function(){ return [{t:0,v:1,type:'spline'},{t:1,v:1,type:'spline'}]; },
+      defaults: { density: 1, spread: 0, lengthVariation: 0, waviness: 0, thickness: 0.18 }
     }
   };
-  var HAIR_TYPE_ORDER = ['natural', 'blunt'];
+  var HAIR_TYPE_ORDER = ['natural', 'blunt', 'cards'];
   var CURVE_POINT_TYPES = ['spline', 'linear'];
   function curvePointTypeLabel(key){ return t('curveType.'+key); }
 
@@ -2339,17 +2567,17 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     return { pts: pts, bridgesByCut: bridgesByCut, cutWalls: cutWalls };
   }
 
-  function buildStrandGeometry(baseCurve, width, depth, spread, seed, lengthVariation, rootNormal, waviness, thicknessCurve, splitEnds, splitCuts, splitGapWidth, roll){
+  function buildStrandGeometry(baseCurve, width, depth, spread, seed, lengthVariation, rootNormal, waviness, thicknessCurve, splitEnds, splitCuts, splitGapWidth, roll, flatCard){
     var tMax = Math.max(0.16, 1 - seed.lengthRand * (lengthVariation || 0));
     var effectiveLength = baseCurve.getLength() * tMax;
     var SEGMENTS = Math.max(8, Math.min(48, Math.round(effectiveLength / 0.045)));
     var positions = [];
     var uvs = [];
     waviness = waviness || 0;
-    var cuts = (splitEnds && splitCuts && splitCuts.length) ? splitCuts : [];
+    var cuts = (!flatCard && splitEnds && splitCuts && splitCuts.length) ? splitCuts : [];
     var gapW = splitGapWidth != null ? splitGapWidth : 0.11;
     var gapWidths = cuts.length ? safeGapWidths(cuts, gapW) : [];
-    var RINGN = cuts.length ? (4 + cuts.length*4) : 4;
+    var RINGN = flatCard ? 2 : (cuts.length ? (4 + cuts.length*4) : 4);
 
     var t0 = baseCurve.getTangentAt(0).normalize();
     var frame0 = initialFrame(t0, rootNormal);
@@ -2413,7 +2641,9 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       });
       pinchHistory.push(pinchAmounts);
 
-      var perimResult = crossSectionPerimeter(cuts, gapWidths, pinchAmounts);
+      var perimResult = flatCard
+        ? { pts: [[1,0],[-1,0]], bridgesByCut: [], cutWalls: [] }
+        : crossSectionPerimeter(cuts, gapWidths, pinchAmounts);
       lastBridgesByCut = perimResult.bridgesByCut;
       lastCutWalls = perimResult.cutWalls;
 
@@ -2423,15 +2653,17 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
           .add(curBinormal.clone().multiplyScalar(pt[0]*halfW))
           .add(curNormal.clone().multiplyScalar(pt[1]*halfD));
         positions.push(ringPt.x, ringPt.y, ringPt.z);
-        uvs.push(c/perimResult.pts.length, localT);
+        var uCoord = c/perimResult.pts.length;
+        uvs.push(uCoord, localT);
       }
     }
 
     var totalRings = SEGMENTS+1;
     var faces = [];
+    var sideFaceCount = flatCard ? 1 : RINGN; // flat cards: one quad layer per segment, not a wrap-around duplicate -- DoubleSide already shows both faces
     for(var s=0;s<SEGMENTS;s++){
       var openPerCut = cuts.map(function(_,ci){ return pinchHistory[s][ci] > OPEN_THRESHOLD; });
-      for(c=0;c<RINGN;c++){
+      for(c=0;c<sideFaceCount;c++){
         var c2 = (c+1)%RINGN;
         var skip = false;
         if(cuts.length && lastBridgesByCut){
@@ -2457,18 +2689,6 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
           faces.push([cw.frontLeft+s*RINGN, cw.frontLeft+(s+1)*RINGN, cw.backLeft+(s+1)*RINGN, cw.backLeft+s*RINGN]);
         });
       }
-    }
-    // root cap: fan from vertex 0, reversed order for outward (-tangent) facing.
-    // Valid even with the extra cut-vertices, since the root ring is always the flat
-    // (un-notched) rectangle -- any extra points there just sit collinear on its edges.
-    for(var f=1; f<RINGN-1; f++){
-      faces.push([0, RINGN-f, RINGN-f-1]);
-    }
-    // tip cap: only for the plain (no cuts) case -- with cuts the tip is left open between
-    // the now-separated strips, which is fine since it's rarely seen end-on.
-    if(!cuts.length){
-      var tipBase = (totalRings-1)*RINGN;
-      faces.push([tipBase+0, tipBase+1, tipBase+2, tipBase+3]);
     }
 
     var indices = [];
@@ -2546,13 +2766,17 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       normalScale: new THREE.Vector2(1, -1), // Lock_1_Normal_DirectX.png is DirectX-convention (inverted green channel)
       roughness: 0.55,
       metalness: 0.06,
+      alphaTest: hairAlphaReady() ? 0.02 : 0, // just skips fully-transparent fragments; alphaToCoverage below does the real softening
+      alphaToCoverage: hairAlphaReady(),      // MSAA-dithered edge instead of a hard 0.5 cutoff -- still no blending/sorting needed
       side: THREE.DoubleSide
     });
+    if(hairBaseColorMap) applyHairHslShader(material);
     lock.material = material;
     if(!lock.thicknessCurve) lock.thicknessCurve = defaultThicknessCurve();
     for(var s=0;s<lock.density;s++){
       var splitActive = lock.hairType === 'blunt' && lock.splitEnds;
-      var built = buildStrandGeometry(baseCurve, lock.thickness, lock.depth, lock.spread, lock.seeds[s], lock.lengthVariation, rootNormal, lock.waviness, lock.thicknessCurve, splitActive, lock.splitCuts, lock.splitGapWidth, lock.roll || 0);
+      var useFlatCard = lock.hairType === 'cards';
+      var built = buildStrandGeometry(baseCurve, lock.thickness, lock.depth, lock.spread, lock.seeds[s], lock.lengthVariation, rootNormal, lock.waviness, lock.thicknessCurve, splitActive, lock.splitCuts, lock.splitGapWidth, lock.roll || 0, useFlatCard);
       var mesh = new THREE.Mesh(built.geometry, material);
       mesh.userData.lockId = lock.id;
       mesh.userData.seedIndex = s;
@@ -3046,6 +3270,66 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   }
   directionIndicatorEl.addEventListener('click', function(){ setMeshDirectionEnabled(!meshDirectionEnabled); });
 
+  var aaIndicatorEl = document.getElementById('aa-indicator');
+  var aaTextEl = document.getElementById('aa-text');
+  function setAntialiasEnabled(val){
+    antialiasEnabled = val;
+    aaIndicatorEl.classList.toggle('on', antialiasEnabled);
+    aaTextEl.textContent = t('indicator.aa.label') + ': ' + (antialiasEnabled ? t('state.on') : t('state.off'));
+    // three.js can't flip antialiasing on an existing WebGL context -- swap in a fresh renderer.
+    var oldCanvas = renderer.domElement;
+    renderer.dispose();
+    viewportEl.removeChild(oldCanvas);
+    renderer = createHairRenderer(antialiasEnabled);
+    viewportEl.appendChild(renderer.domElement);
+  }
+  aaIndicatorEl.addEventListener('click', function(){ setAntialiasEnabled(!antialiasEnabled); });
+
+  var texHueSlider = document.getElementById('tex-hue-slider');
+  var texHueValueEl = document.getElementById('tex-hue-value');
+  var texLightnessSlider = document.getElementById('tex-lightness-slider');
+  var texLightnessValueEl = document.getElementById('tex-lightness-value');
+  texHueSlider.addEventListener('input', function(){
+    var v = parseFloat(texHueSlider.value);
+    texHueValueEl.textContent = Math.round(v) + '°';
+    setGlobalHairHsl(v, globalHairLightness);
+  });
+  texLightnessSlider.addEventListener('input', function(){
+    var v = parseFloat(texLightnessSlider.value);
+    texLightnessValueEl.textContent = v.toFixed(2);
+    setGlobalHairHsl(globalHairHue, v);
+  });
+
+  var texAlphaStrengthSlider = document.getElementById('tex-alpha-strength-slider');
+  var texAlphaStrengthValueEl = document.getElementById('tex-alpha-strength-value');
+  var texAlphaEnabledToggle = document.getElementById('tex-alpha-enabled-toggle');
+  var texGradientRangeSlider = document.getElementById('tex-gradient-range-slider');
+  var texGradientRangeValueEl = document.getElementById('tex-gradient-range-value');
+  var texGradientEnabledToggle = document.getElementById('tex-gradient-enabled-toggle');
+  texAlphaStrengthSlider.addEventListener('input', function(){
+    var v = parseFloat(texAlphaStrengthSlider.value);
+    texAlphaStrengthValueEl.textContent = v.toFixed(2);
+    setHairAlphaControls(texAlphaEnabledToggle.checked, v, texGradientEnabledToggle.checked, hairGradientRange);
+  });
+  texAlphaEnabledToggle.addEventListener('change', function(){
+    setHairAlphaControls(texAlphaEnabledToggle.checked, hairAlphaStrength, texGradientEnabledToggle.checked, hairGradientRange);
+  });
+  texGradientRangeSlider.addEventListener('input', function(){
+    var v = parseFloat(texGradientRangeSlider.value);
+    texGradientRangeValueEl.textContent = v.toFixed(2);
+    setHairAlphaControls(texAlphaEnabledToggle.checked, hairAlphaStrength, texGradientEnabledToggle.checked, v);
+  });
+  texGradientEnabledToggle.addEventListener('change', function(){
+    setHairAlphaControls(texAlphaEnabledToggle.checked, hairAlphaStrength, texGradientEnabledToggle.checked, hairGradientRange);
+  });
+
+  var hairTextureHeadingEl = document.getElementById('hair-texture-heading');
+  var hairTextureBodyEl = document.getElementById('hair-texture-body');
+  hairTextureHeadingEl.addEventListener('click', function(){
+    var collapsed = hairTextureBodyEl.classList.toggle('collapsed');
+    hairTextureHeadingEl.classList.toggle('collapsed', collapsed);
+  });
+
   document.getElementById('draft-cancel').addEventListener('click', clearDraft);
   draftFinishBtn.addEventListener('click', finishDraft);
 
@@ -3131,20 +3415,21 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var detachRootToggle = document.getElementById('detach-root-toggle');
   var brushOptionsSmoothEl = document.getElementById('brush-options-smooth');
   var smoothStrengthSlider = document.getElementById('smooth-strength-slider');
-  Array.prototype.forEach.call(brushbarEl.querySelectorAll('.brush-btn'), function(btn){
-    btn.addEventListener('click', function(){
-      activeBrush = (activeBrush === btn.dataset.brush) ? null : btn.dataset.brush;
-      Array.prototype.forEach.call(brushbarEl.querySelectorAll('.brush-btn'), function(b){
-        b.classList.toggle('active', b.dataset.brush === activeBrush);
-      });
-      viewportEl.classList.toggle('mode-brush', !!activeBrush);
-      brushOptionsEl.classList.toggle('visible', activeBrush === 'move' || activeBrush === 'sculpt' || activeBrush === 'smooth');
-      brushOptionsSingleEl.classList.toggle('visible', activeBrush === 'single');
-      brushOptionsSmoothEl.classList.toggle('visible', activeBrush === 'smooth');
-      if(!activeBrush) brushCursor.visible = false;
-      if(activeBrush !== 'single') clearSingleHairSelection();
-      updateHint();
+  function selectBrush(brushKey){
+    activeBrush = (activeBrush === brushKey) ? null : brushKey;
+    Array.prototype.forEach.call(brushbarEl.querySelectorAll('.brush-btn'), function(b){
+      b.classList.toggle('active', b.dataset.brush === activeBrush);
     });
+    viewportEl.classList.toggle('mode-brush', !!activeBrush);
+    brushOptionsEl.classList.toggle('visible', activeBrush === 'move' || activeBrush === 'sculpt' || activeBrush === 'smooth');
+    brushOptionsSingleEl.classList.toggle('visible', activeBrush === 'single');
+    brushOptionsSmoothEl.classList.toggle('visible', activeBrush === 'smooth');
+    if(!activeBrush) brushCursor.visible = false;
+    if(activeBrush !== 'single') clearSingleHairSelection();
+    updateHint();
+  }
+  Array.prototype.forEach.call(brushbarEl.querySelectorAll('.brush-btn'), function(btn){
+    btn.addEventListener('click', function(){ selectBrush(btn.dataset.brush); });
   });
   brushRadiusSlider.addEventListener('input', function(){
     brushRadius = parseFloat(brushRadiusSlider.value);
@@ -3571,6 +3856,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
         lock.lengthVariation = preset.defaults.lengthVariation;
         lock.waviness = preset.defaults.waviness;
         if(preset.defaults.depth !== undefined) lock.depth = preset.defaults.depth;
+        if(preset.defaults.thickness !== undefined) lock.thickness = preset.defaults.thickness;
         ensureSeeds(lock); // density may have changed
       }
       regenerateLockGeometry(lock);
@@ -3601,9 +3887,12 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     makeSlider(t('field.width'), 0.005, 0.35, 0.005, lock.thickness, function(v){ return v.toFixed(3); }, function(v){
       lock.thickness = v; regenerateLockGeometry(lock);
     });
-    makeSlider(t('field.thickness'), 0.001, 0.15, 0.002, lock.depth, function(v){ return v.toFixed(3); }, function(v){
-      lock.depth = v; regenerateLockGeometry(lock);
-    });
+    var isFlatNow = lock.hairType === 'cards';
+    if(!isFlatNow){
+      makeSlider(t('field.thickness'), 0.001, 0.15, 0.002, lock.depth, function(v){ return v.toFixed(3); }, function(v){
+        lock.depth = v; regenerateLockGeometry(lock);
+      });
+    }
     makeSlider(t('field.meshOffset'), -0.2, 0.2, 0.005, lock.meshOffset || 0, function(v){ return v.toFixed(3); }, function(v){
       lock.meshOffset = v; regenerateLockGeometry(lock);
     });
@@ -4075,6 +4364,22 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       keyBHeld = true;
       return;
     }
+    if(!ctrlOrCmd && (e.key === 'q' || e.key === 'Q')){
+      selectBrush('move');
+      return;
+    }
+    if(!ctrlOrCmd && (e.key === 'w' || e.key === 'W')){
+      selectBrush('single');
+      return;
+    }
+    if(!ctrlOrCmd && (e.key === 'e' || e.key === 'E')){
+      selectBrush('sculpt');
+      return;
+    }
+    if(!ctrlOrCmd && (e.key === 'r' || e.key === 'R')){
+      selectBrush('smooth');
+      return;
+    }
     if(ctrlOrCmd && (e.key === 'd' || e.key === 'D')){
       e.preventDefault();
       var dupLock = getLock(selectedLockId);
@@ -4173,6 +4478,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     symmetryTextEl.textContent = t('indicator.symmetry.label') + ': ' + (symmetryEnabled ? t('state.on') : t('state.off'));
     magnetTextEl.textContent = t('indicator.magnet.label') + ': ' + (magnetEnabled ? t('state.on') : t('state.off'));
     directionTextEl.textContent = t('indicator.direction.label') + ': ' + (meshDirectionEnabled ? t('state.on') : t('state.off'));
+    aaTextEl.textContent = t('indicator.aa.label') + ': ' + (antialiasEnabled ? t('state.on') : t('state.off'));
     updateHint();
     renderSidebar();
     renderReferenceList();
