@@ -426,6 +426,11 @@
         <circle cx="12.5" cy="3" r="1.7" fill="currentColor" stroke="none"/>
       </svg>
     </button>
+    <button class="brush-btn" data-brush="sculpt" title="Лепка — мять форму одного волоса в радиусе кисти" data-i18n-title="brush.sculpt.title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12.5 2.5c1 1.6-.6 2.4-.2 3.8.5 1.7 3 1 3.4 2.7.4 1.8-2.3 1.7-2 3.5.3 1.7 3 1.2 3.1 3 .1 1.6-2.4 1.9-2.3 3.5.1 1.2 1.3 1.6 1 3"/>
+      </svg>
+    </button>
     <div class="brush-options" id="brush-options">
       <span class="brush-options-label" data-i18n="brush.radius.label">Радиус</span>
       <input type="range" id="brush-radius-slider" min="0.04" max="0.4" step="0.01" value="0.16">
@@ -497,6 +502,7 @@ var LOKON_I18N = {
     'brush.single.title': 'Один волос — выделить и подвинуть один волосок',
     'brush.detachRoot.label': 'Открепить корень',
     'brush.detachRoot.title': 'Двигать волос целиком, включая корень',
+    'brush.sculpt.title': 'Лепка — мять форму одного волоса в радиусе кисти',
     'draft.cancel': 'Отмена (Esc)', 'draft.finish': 'Готово (Enter)',
     'indicator.magnet.title': 'Магнит к голове (горячая клавиша C)',
     'indicator.direction.title': 'Ориентация волос по мешу при редактировании',
@@ -511,6 +517,8 @@ var LOKON_I18N = {
     'hint.brush.single.selected': 'Клик по волоску — выделить его • Тяни — подвинуть только этот волос',
     'hint.brush.single.selectedDetached': 'Клик по волоску — выделить его • Тяни — весь волос сдвигается целиком, вместе с корнем',
     'hint.brush.single.none': 'Выбери прядь слева, затем кликни по одному волоску в сцене',
+    'hint.brush.sculpt.selected': 'Тяни по волосу — лепка гнёт только его форму в радиусе кисти, соседние волосы не трогает',
+    'hint.brush.sculpt.none': 'Выбери прядь, затем тяни по одному волосу кистью лепки',
     'hint.add.start': 'Клик по голове — поставить первую точку пряди',
     'hint.add.continue': 'Клик — добавить точку ({n}) • Enter — завершить • Backspace — отменить точку',
     'hint.edit.selected': 'Тяни точку, чтобы сместить • Двойной клик — удалить точку • Розовая точка на линии — добавить точку • Клик по голове — удлинить прядь',
@@ -578,6 +586,7 @@ var LOKON_I18N = {
     'brush.single.title': 'Single hair — select and move one strand',
     'brush.detachRoot.label': 'Detach root',
     'brush.detachRoot.title': 'Move the whole hair, root included',
+    'brush.sculpt.title': 'Sculpt — knead the shape of one hair within the brush radius',
     'draft.cancel': 'Cancel (Esc)', 'draft.finish': 'Done (Enter)',
     'indicator.magnet.title': 'Magnet to head (hotkey C)',
     'indicator.direction.title': 'Orient hair to mesh while editing',
@@ -592,6 +601,8 @@ var LOKON_I18N = {
     'hint.brush.single.selected': 'Click a hair to select it • Drag to move just that hair',
     'hint.brush.single.selectedDetached': 'Click a hair to select it • Drag moves the whole hair, root included',
     'hint.brush.single.none': 'Select a strand on the left, then click a single hair in the scene',
+    'hint.brush.sculpt.selected': 'Drag along a hair — sculpt bends only its shape within the brush radius, neighboring hairs stay put',
+    'hint.brush.sculpt.none': 'Select a strand, then drag over one hair with the sculpt brush',
     'hint.add.start': 'Click on the head — place the first strand point',
     'hint.add.continue': 'Click — add a point ({n}) • Enter — finish • Backspace — undo point',
     'hint.edit.selected': 'Drag a point to move it • Double-click — delete the point • Pink dot on the line — add a point • Click on the head — extend the strand',
@@ -1651,6 +1662,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var selectedHairLockId = null;    // id of the lock that owns the currently picked/highlighted single hair
   var selectedHairSeedIndex = null; // index into lock.seeds for that picked hair
   var detachHairRoot = false; // when true, single-hair drags move the whole hair (root included) instead of just tapering the tip
+  var sculptDrag = null; // {lock, seed, entry, refPoint} -- kneads one hair's own shape within brushRadius along its length
   var symmetryEnabled = false;
   var PALETTE = ['#c77fa1','#9085c0','#86baab','#c6a67a','#7fa7c7','#c7897f','#a387bf','#8db39e'];
 
@@ -1688,7 +1700,22 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   updateBrushCursorScale();
 
   function randomSeed(){
-    return { lateral:(Math.random()-0.5)*2, vertical:(Math.random()-0.5)*2, phase:Math.random()*Math.PI*2, lengthRand: Math.random(), subOffset: new THREE.Vector3(0,0,0), rootOffset: new THREE.Vector3(0,0,0) };
+    return { lateral:(Math.random()-0.5)*2, vertical:(Math.random()-0.5)*2, phase:Math.random()*Math.PI*2, lengthRand: Math.random(), subOffset: new THREE.Vector3(0,0,0), rootOffset: new THREE.Vector3(0,0,0), deforms: [] };
+  }
+  // A seed's `deforms` array holds localized sculpt-brush bumps: {t, radius, offset}, each applied
+  // only to the ring(s) of its own single strand within `radius` of position `t` (see buildStrandGeometry).
+  // These small helpers keep every place that copies a seed (mirroring, duplicating, undo/save) in sync.
+  function mirrorDeforms(deforms){
+    return (deforms || []).map(function(d){ return { t: d.t, radius: d.radius, offset: new THREE.Vector3(-d.offset.x, d.offset.y, d.offset.z) }; });
+  }
+  function cloneDeforms(deforms){
+    return (deforms || []).map(function(d){ return { t: d.t, radius: d.radius, offset: d.offset.clone() }; });
+  }
+  function serializeDeforms(deforms){
+    return (deforms || []).map(function(d){ return { t: d.t, radius: d.radius, offset: [d.offset.x, d.offset.y, d.offset.z] }; });
+  }
+  function deserializeDeforms(arr){
+    return (arr || []).map(function(d){ return { t: d.t, radius: d.radius, offset: new THREE.Vector3(d.offset[0], d.offset[1], d.offset[2]) }; });
   }
 
   /* ============================================================
@@ -2311,6 +2338,15 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       if(seed.rootOffset && seed.rootOffset.lengthSq() > 0){
         center.add(seed.rootOffset); // no localT scaling -- shifts the whole hair, root included
       }
+      if(seed.deforms && seed.deforms.length){
+        for(var di=0; di<seed.deforms.length; di++){
+          var df = seed.deforms[di];
+          var worldDist = Math.abs(localT - df.t) * effectiveLength;
+          if(worldDist <= df.radius){
+            center.addScaledVector(df.offset, brushFalloff(worldDist, df.radius));
+          }
+        }
+      }
       var profileMul = sampleThicknessCurve(thicknessCurve, localT);
       var halfW = Math.max(0.0006, width * Math.max(0, profileMul)) * 0.5;
       var halfD = Math.max(0.0003, depth * Math.max(0, profileMul)) * 0.5;
@@ -2501,7 +2537,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       return {
         lateral: -s.lateral, vertical: s.vertical, phase: s.phase, lengthRand: s.lengthRand,
         subOffset: new THREE.Vector3(-s.subOffset.x, s.subOffset.y, s.subOffset.z),
-        rootOffset: new THREE.Vector3(-(s.rootOffset ? s.rootOffset.x : 0), s.rootOffset ? s.rootOffset.y : 0, s.rootOffset ? s.rootOffset.z : 0)
+        rootOffset: new THREE.Vector3(-(s.rootOffset ? s.rootOffset.x : 0), s.rootOffset ? s.rootOffset.y : 0, s.rootOffset ? s.rootOffset.z : 0),
+        deforms: mirrorDeforms(s.deforms)
       };
     });
     regenerateLockGeometry(partner, true);
@@ -2653,7 +2690,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       return {
         lateral: -s.lateral, vertical: s.vertical, phase: s.phase, lengthRand: s.lengthRand,
         subOffset: new THREE.Vector3(-s.subOffset.x, s.subOffset.y, s.subOffset.z),
-        rootOffset: new THREE.Vector3(-(s.rootOffset ? s.rootOffset.x : 0), s.rootOffset ? s.rootOffset.y : 0, s.rootOffset ? s.rootOffset.z : 0)
+        rootOffset: new THREE.Vector3(-(s.rootOffset ? s.rootOffset.x : 0), s.rootOffset ? s.rootOffset.y : 0, s.rootOffset ? s.rootOffset.z : 0),
+        deforms: mirrorDeforms(s.deforms)
       };
     });
 
@@ -2696,7 +2734,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       return {
         lateral: s.lateral, vertical: s.vertical, phase: s.phase, lengthRand: s.lengthRand,
         subOffset: s.subOffset.clone(),
-        rootOffset: (s.rootOffset || new THREE.Vector3(0,0,0)).clone()
+        rootOffset: (s.rootOffset || new THREE.Vector3(0,0,0)).clone(),
+        deforms: cloneDeforms(s.deforms)
       };
     });
     regenerateLockGeometry(dup);
@@ -2773,7 +2812,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
             return {
               lateral: s.lateral, vertical: s.vertical, phase: s.phase, lengthRand: s.lengthRand,
               subOffset: [s.subOffset.x, s.subOffset.y, s.subOffset.z],
-              rootOffset: s.rootOffset ? [s.rootOffset.x, s.rootOffset.y, s.rootOffset.z] : [0,0,0]
+              rootOffset: s.rootOffset ? [s.rootOffset.x, s.rootOffset.y, s.rootOffset.z] : [0,0,0],
+              deforms: serializeDeforms(s.deforms)
             };
           })
         };
@@ -2815,7 +2855,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
         return {
           lateral: s.lateral, vertical: s.vertical, phase: s.phase, lengthRand: s.lengthRand,
           subOffset: new THREE.Vector3(s.subOffset[0], s.subOffset[1], s.subOffset[2]),
-          rootOffset: s.rootOffset ? new THREE.Vector3(s.rootOffset[0], s.rootOffset[1], s.rootOffset[2]) : new THREE.Vector3(0,0,0)
+          rootOffset: s.rootOffset ? new THREE.Vector3(s.rootOffset[0], s.rootOffset[1], s.rootOffset[2]) : new THREE.Vector3(0,0,0),
+          deforms: deserializeDeforms(s.deforms)
         };
       }),
       material: null
@@ -2970,6 +3011,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       txt = selectedLockId ? t('hint.brush.selected') : t('hint.brush.none');
     } else if(activeBrush === 'single'){
       txt = selectedLockId ? (detachHairRoot ? t('hint.brush.single.selectedDetached') : t('hint.brush.single.selected')) : t('hint.brush.single.none');
+    } else if(activeBrush === 'sculpt'){
+      txt = selectedLockId ? t('hint.brush.sculpt.selected') : t('hint.brush.sculpt.none');
     } else if(mode === 'add'){
       txt = draftPoints.length === 0 ? t('hint.add.start') : t('hint.add.continue', {n: draftPoints.length});
     } else if(mode === 'edit'){
@@ -3014,7 +3057,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
         b.classList.toggle('active', b.dataset.brush === activeBrush);
       });
       viewportEl.classList.toggle('mode-brush', !!activeBrush);
-      brushOptionsEl.classList.toggle('visible', activeBrush === 'move');
+      brushOptionsEl.classList.toggle('visible', activeBrush === 'move' || activeBrush === 'sculpt');
       brushOptionsSingleEl.classList.toggle('visible', activeBrush === 'single');
       if(!activeBrush) brushCursor.visible = false;
       if(activeBrush !== 'single') clearSingleHairSelection();
@@ -3632,6 +3675,21 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       }
     }
 
+    if(activeBrush === 'sculpt' && selectedLockId){
+      var lockSc = getLock(selectedLockId);
+      if(lockSc){
+        var hitSc = raycastObjects(lockSc.group.children);
+        if(hitSc && hitSc.uv){
+          pushUndoSnapshot();
+          var seedSc = lockSc.seeds[hitSc.object.userData.seedIndex];
+          var entry = { t: Math.min(1, Math.max(0, hitSc.uv.y)), radius: brushRadius, offset: new THREE.Vector3(0,0,0) };
+          seedSc.deforms.push(entry);
+          sculptDrag = { lock: lockSc, seed: seedSc, entry: entry, refPoint: hitSc.point.clone() };
+          return;
+        }
+      }
+    }
+
     if(mode === 'rotate' && selectedLockId){
       var lockR = getLock(selectedLockId);
       if(lockR && lockR.points.length >= 2){
@@ -3677,6 +3735,16 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       regenerateLockGeometry(singleHairDrag.lock);
       return;
     }
+    if(sculptDrag){
+      setNdcFromEvent(e);
+      var ptSc = raycastPlaneThrough(sculptDrag.refPoint);
+      var deltaSc = ptSc.clone().sub(sculptDrag.refPoint);
+      sculptDrag.entry.offset.add(deltaSc);
+      sculptDrag.refPoint.copy(ptSc);
+      brushCursor.position.copy(ptSc);
+      regenerateLockGeometry(sculptDrag.lock);
+      return;
+    }
     if(brushDrag){
       setNdcFromEvent(e);
       var ptB = raycastPlaneThrough(brushDrag.refPoint);
@@ -3698,7 +3766,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       regenerateLockGeometry(markerDrag.lock);
       return;
     }
-    if((activeBrush === 'move' || activeBrush === 'single') && !pointerDown){
+    if((activeBrush === 'move' || activeBrush === 'single' || activeBrush === 'sculpt') && !pointerDown){
       setNdcFromEvent(e);
       var lockH = getLock(selectedLockId);
       var hitH = lockH ? raycastObjects(lockH.group.children) : null;
@@ -3741,6 +3809,15 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       pointerDown = false;
       return;
     }
+    if(sculptDrag){
+      if(sculptDrag.entry.offset.lengthSq() < 1e-8){
+        var idx = sculptDrag.seed.deforms.indexOf(sculptDrag.entry);
+        if(idx !== -1) sculptDrag.seed.deforms.splice(idx, 1);
+      }
+      sculptDrag = null;
+      pointerDown = false;
+      return;
+    }
     if(brushDrag){
       brushDrag = null;
       pointerDown = false;
@@ -3759,13 +3836,14 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   });
 
   viewportEl.addEventListener('pointerleave', function(){
-    if(!brushDrag && !singleHairDrag) brushCursor.visible = false;
+    if(!brushDrag && !singleHairDrag && !sculptDrag) brushCursor.visible = false;
   });
   viewportEl.addEventListener('pointercancel', function(){
     rollDrag = null;
     brushDrag = null;
     markerDrag = null;
     singleHairDrag = null;
+    sculptDrag = null;
     pointerDown = false;
   });
 
