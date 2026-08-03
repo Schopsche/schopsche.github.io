@@ -440,7 +440,7 @@
     </div>
     <div class="brush-options" id="brush-options-smooth">
       <span class="brush-options-label" data-i18n="brush.strength.label">Сила</span>
-      <input type="range" id="smooth-strength-slider" min="0.05" max="1" step="0.05" value="0.35">
+      <input type="range" id="smooth-strength-slider" min="0.02" max="2" step="0.02" value="0.35">
     </div>
   </aside>
 
@@ -1420,6 +1420,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var renderer = new THREE.WebGLRenderer({antialias:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.outputEncoding = THREE.sRGBEncoding;
   viewportEl.appendChild(renderer.domElement);
 
   // lights
@@ -1433,6 +1434,34 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var rimLight = new THREE.DirectionalLight(0xff9fd4, 0.28);
   rimLight.position.set(0, 1.5, -3);
   scene.add(rimLight);
+
+  // Default hair textures (base color + DirectX normal map), applied to every lock's material
+  // in regenerateLockGeometry. Loaded async -- locks created before these resolve just render
+  // with flat color until refreshAllLockMaterials() rebuilds their materials once each is ready.
+  var hairBaseColorMap = null;
+  var hairNormalMap = null;
+  var hairTextureLoader = new THREE.TextureLoader();
+  hairTextureLoader.crossOrigin = 'anonymous';
+  function refreshAllLockMaterials(){
+    locks.forEach(function(l){ regenerateLockGeometry(l); });
+  }
+  hairTextureLoader.load(
+    'https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/tex/Lock_1_Base_color.png',
+    function(tex){
+      tex.encoding = THREE.sRGBEncoding;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      hairBaseColorMap = tex;
+      refreshAllLockMaterials();
+    }
+  );
+  hairTextureLoader.load(
+    'https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/tex/Lock_1_Normal_DirectX.png',
+    function(tex){
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      hairNormalMap = tex;
+      refreshAllLockMaterials();
+    }
+  );
 
   // head reference mesh (also the raycast target for root points)
   var headMesh = (function(){
@@ -1671,6 +1700,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var detachHairRoot = false; // when true, single-hair drags move the whole hair (root included) instead of just tapering the tip
   var sculptDrag = null; // {lock, seed, entry, refPoint} -- kneads one hair's own shape within brushRadius along its length
   var smoothActive = false; // true while dragging with the smooth brush, relaxing sculpt bumps under the cursor
+  var keyBHeld = false; // true while the B key is held down (brush-resize modifier)
+  var brushResizeDrag = null; // {startX, startRadius} -- active while holding B + dragging LMB left/right
   var symmetryEnabled = false;
   var PALETTE = ['#c77fa1','#9085c0','#86baab','#c6a67a','#7fa7c7','#c7897f','#a387bf','#8db39e'];
 
@@ -2510,6 +2541,9 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     var rootNormal = (meshDirectionEnabled && curvePoints[0].lengthSq() > 1e-8) ? curvePoints[0].clone().normalize() : new THREE.Vector3(0,1,0);
     var material = new THREE.MeshStandardMaterial({
       color: new THREE.Color(lock.color),
+      map: hairBaseColorMap,
+      normalMap: hairNormalMap,
+      normalScale: new THREE.Vector2(1, -1), // Lock_1_Normal_DirectX.png is DirectX-convention (inverted green channel)
       roughness: 0.55,
       metalness: 0.06,
       side: THREE.DoubleSide
@@ -2545,7 +2579,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       var d = seed.deforms[i];
       var dist = Math.abs(d.t - t0) * effLen;
       if(dist <= d.radius){
-        d.offset.multiplyScalar(1 - smoothStrength * brushFalloff(dist, d.radius));
+        d.offset.multiplyScalar(Math.max(0, 1 - smoothStrength * brushFalloff(dist, d.radius)));
         changed = true;
         if(d.offset.lengthSq() < 1e-7) seed.deforms.splice(i, 1);
       }
@@ -3687,6 +3721,12 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     activeButton = e.button;
     viewportEl.setPointerCapture(e.pointerId);
 
+    if(keyBHeld && activeButton === 0 && activeBrush){
+      brushResizeDrag = { startX: e.clientX, startRadius: brushRadius, anchorPoint: brushCursor.position.clone() };
+      brushCursor.visible = true;
+      return;
+    }
+
     if(activeBrush === 'move' && selectedLockId){
       var lockB = getLock(selectedLockId);
       if(lockB){
@@ -3781,6 +3821,15 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   });
 
   viewportEl.addEventListener('pointermove', function(e){
+    if(brushResizeDrag){
+      var dxR = e.clientX - brushResizeDrag.startX;
+      brushRadius = Math.min(0.4, Math.max(0.04, brushResizeDrag.startRadius + dxR * 0.0015));
+      brushRadiusSlider.value = brushRadius.toFixed(2);
+      brushCursor.position.copy(brushResizeDrag.anchorPoint); // stays put -- resizing must never move the brush
+      brushCursor.scale.setScalar(activeBrush === 'single' ? 0.035 : brushRadius);
+      brushCursor.visible = true;
+      return;
+    }
     if(rollDrag){
       var dxM = e.clientX - rollDrag.centerPx.x, dyM = e.clientY - rollDrag.centerPx.y;
       var angle = Math.atan2(dyM, dxM);
@@ -3886,6 +3935,11 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   });
 
   viewportEl.addEventListener('pointerup', function(e){
+    if(brushResizeDrag){
+      brushResizeDrag = null;
+      pointerDown = false;
+      return;
+    }
     if(rollDrag){
       rollDrag = null;
       pointerDown = false;
@@ -3928,7 +3982,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   });
 
   viewportEl.addEventListener('pointerleave', function(){
-    if(!brushDrag && !singleHairDrag && !sculptDrag && !smoothActive) brushCursor.visible = false;
+    if(!brushDrag && !singleHairDrag && !sculptDrag && !smoothActive && !brushResizeDrag) brushCursor.visible = false;
   });
   viewportEl.addEventListener('pointercancel', function(){
     rollDrag = null;
@@ -3937,6 +3991,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     singleHairDrag = null;
     sculptDrag = null;
     smoothActive = false;
+    brushResizeDrag = null;
     pointerDown = false;
   });
 
@@ -4016,12 +4071,22 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       setMagnetEnabled(!magnetEnabled);
       return;
     }
+    if(!ctrlOrCmd && (e.key === 'b' || e.key === 'B')){
+      keyBHeld = true;
+      return;
+    }
     if(ctrlOrCmd && (e.key === 'd' || e.key === 'D')){
       e.preventDefault();
       var dupLock = getLock(selectedLockId);
       if(dupLock){ pushUndoSnapshot(); duplicateLock(dupLock); }
       return;
     }
+
+    if(e.key === '1') setMode('view');
+    if(e.key === '2') setMode('add');
+    if(e.key === '3') setMode('edit');
+    if(e.key === '4') setMode('trim');
+    if(e.key === '5') setMode('rotate');
 
     if(mode === 'add'){
       if(e.key === 'Enter') finishDraft();
@@ -4042,12 +4107,15 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       e.preventDefault();
       deleteLock(selectedLockId);
     }
-    if(e.key === '1') setMode('view');
-    if(e.key === '2') setMode('add');
-    if(e.key === '3' && selectedLockId) setMode('edit');
-    if(e.key === '4' && selectedLockId) setMode('trim');
-    if(e.key === '5' && selectedLockId) setMode('rotate');
     if(e.key === 'Escape') selectLock(null);
+  });
+
+  window.addEventListener('keyup', function(e){
+    if(e.key === 'b' || e.key === 'B') keyBHeld = false;
+  });
+  window.addEventListener('blur', function(){
+    keyBHeld = false;
+    brushResizeDrag = null;
   });
 
   /* ============================================================
