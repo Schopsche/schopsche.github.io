@@ -431,6 +431,11 @@
         <path d="M12.5 2.5c1 1.6-.6 2.4-.2 3.8.5 1.7 3 1 3.4 2.7.4 1.8-2.3 1.7-2 3.5.3 1.7 3 1.2 3.1 3 .1 1.6-2.4 1.9-2.3 3.5.1 1.2 1.3 1.6 1 3"/>
       </svg>
     </button>
+    <button class="brush-btn" data-brush="smooth" title="Смус — сглаживает лепку на одном волосе в радиусе кисти" data-i18n-title="brush.smooth.title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 13c1.5-3 3-3 4.5 0s3 3 4.5 0M12 13h9"/>
+      </svg>
+    </button>
     <div class="brush-options" id="brush-options">
       <span class="brush-options-label" data-i18n="brush.radius.label">Радиус</span>
       <input type="range" id="brush-radius-slider" min="0.04" max="0.4" step="0.01" value="0.16">
@@ -440,6 +445,10 @@
       <div class="brush-toggle-row">
         <input type="checkbox" id="detach-root-toggle" title="Двигать волос целиком, включая корень" data-i18n-title="brush.detachRoot.title">
       </div>
+    </div>
+    <div class="brush-options" id="brush-options-smooth">
+      <span class="brush-options-label" data-i18n="brush.strength.label">Сила</span>
+      <input type="range" id="smooth-strength-slider" min="0.05" max="1" step="0.05" value="0.35">
     </div>
   </aside>
 
@@ -498,11 +507,12 @@ var LOKON_I18N = {
     'btn.save.title': 'Сохранить проект (все пряди, настройки, референсы)', 'btn.save.label': 'Сохранить',
     'btn.load.title': 'Загрузить проект', 'btn.load.label': 'Загрузить',
     'btn.export.title': 'Экспорт модели прядей в OBJ (+MTL с цветом)', 'btn.export.label': 'Экспорт .obj',
-    'brush.move.title': 'Мув — локальный сдвиг мелких прядок', 'brush.radius.label': 'Радиус',
+    'brush.move.title': 'Мув — локальный сдвиг мелких прядок', 'brush.radius.label': 'Радиус', 'brush.strength.label': 'Сила',
     'brush.single.title': 'Один волос — выделить и подвинуть один волосок',
     'brush.detachRoot.label': 'Открепить корень',
     'brush.detachRoot.title': 'Двигать волос целиком, включая корень',
     'brush.sculpt.title': 'Лепка — мять форму одного волоса в радиусе кисти',
+    'brush.smooth.title': 'Смус — сглаживает лепку на одном волосе в радиусе кисти',
     'draft.cancel': 'Отмена (Esc)', 'draft.finish': 'Готово (Enter)',
     'indicator.magnet.title': 'Магнит к голове (горячая клавиша C)',
     'indicator.direction.title': 'Ориентация волос по мешу при редактировании',
@@ -517,8 +527,10 @@ var LOKON_I18N = {
     'hint.brush.single.selected': 'Клик по волоску — выделить его • Тяни — подвинуть только этот волос',
     'hint.brush.single.selectedDetached': 'Клик по волоску — выделить его • Тяни — весь волос сдвигается целиком, вместе с корнем',
     'hint.brush.single.none': 'Выбери прядь слева, затем кликни по одному волоску в сцене',
-    'hint.brush.sculpt.selected': 'Тяни по волосу — лепка гнёт только его форму в радиусе кисти, соседние волосы не трогает',
+    'hint.brush.sculpt.selected': 'Тяни по волосу — лепка гнёт только его форму в радиусе кисти, соседние волосы не трогает • Shift — временно сглаживает',
     'hint.brush.sculpt.none': 'Выбери прядь, затем тяни по одному волосу кистью лепки',
+    'hint.brush.smooth.selected': 'Тяни по волосу — сглаживает бугры лепки в радиусе кисти на этом волосе, остальные не трогает',
+    'hint.brush.smooth.none': 'Выбери прядь, затем тяни по волосу кистью смус, чтобы сгладить лепку',
     'hint.add.start': 'Клик по голове — поставить первую точку пряди',
     'hint.add.continue': 'Клик — добавить точку ({n}) • Enter — завершить • Backspace — отменить точку',
     'hint.edit.selected': 'Тяни точку, чтобы сместить • Двойной клик — удалить точку • Розовая точка на линии — добавить точку • Клик по голове — удлинить прядь',
@@ -582,11 +594,12 @@ var LOKON_I18N = {
     'btn.save.title': 'Save project (all strands, settings, references)', 'btn.save.label': 'Save',
     'btn.load.title': 'Load project', 'btn.load.label': 'Load',
     'btn.export.title': 'Export strand model to OBJ (+MTL with color)', 'btn.export.label': 'Export .obj',
-    'brush.move.title': 'Move — local shift of small strand clumps', 'brush.radius.label': 'Radius',
+    'brush.move.title': 'Move — local shift of small strand clumps', 'brush.radius.label': 'Radius', 'brush.strength.label': 'Strength',
     'brush.single.title': 'Single hair — select and move one strand',
     'brush.detachRoot.label': 'Detach root',
     'brush.detachRoot.title': 'Move the whole hair, root included',
     'brush.sculpt.title': 'Sculpt — knead the shape of one hair within the brush radius',
+    'brush.smooth.title': 'Smooth — relaxes sculpted bumps on one hair within the brush radius',
     'draft.cancel': 'Cancel (Esc)', 'draft.finish': 'Done (Enter)',
     'indicator.magnet.title': 'Magnet to head (hotkey C)',
     'indicator.direction.title': 'Orient hair to mesh while editing',
@@ -601,8 +614,10 @@ var LOKON_I18N = {
     'hint.brush.single.selected': 'Click a hair to select it • Drag to move just that hair',
     'hint.brush.single.selectedDetached': 'Click a hair to select it • Drag moves the whole hair, root included',
     'hint.brush.single.none': 'Select a strand on the left, then click a single hair in the scene',
-    'hint.brush.sculpt.selected': 'Drag along a hair — sculpt bends only its shape within the brush radius, neighboring hairs stay put',
+    'hint.brush.sculpt.selected': 'Drag along a hair — sculpt bends only its shape within the brush radius, neighboring hairs stay put • Shift — smooths temporarily',
     'hint.brush.sculpt.none': 'Select a strand, then drag over one hair with the sculpt brush',
+    'hint.brush.smooth.selected': 'Drag along a hair — relaxes sculpted bumps within the brush radius on that hair, others stay put',
+    'hint.brush.smooth.none': 'Select a strand, then drag over a hair with the smooth brush to relax sculpted bumps',
     'hint.add.start': 'Click on the head — place the first strand point',
     'hint.add.continue': 'Click — add a point ({n}) • Enter — finish • Backspace — undo point',
     'hint.edit.selected': 'Drag a point to move it • Double-click — delete the point • Pink dot on the line — add a point • Click on the head — extend the strand',
@@ -1663,6 +1678,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var selectedHairSeedIndex = null; // index into lock.seeds for that picked hair
   var detachHairRoot = false; // when true, single-hair drags move the whole hair (root included) instead of just tapering the tip
   var sculptDrag = null; // {lock, seed, entry, refPoint} -- kneads one hair's own shape within brushRadius along its length
+  var smoothActive = false; // true while dragging with the smooth brush, relaxing sculpt bumps under the cursor
   var symmetryEnabled = false;
   var PALETTE = ['#c77fa1','#9085c0','#86baab','#c6a67a','#7fa7c7','#c7897f','#a387bf','#8db39e'];
 
@@ -1716,6 +1732,19 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   }
   function deserializeDeforms(arr){
     return (arr || []).map(function(d){ return { t: d.t, radius: d.radius, offset: new THREE.Vector3(d.offset[0], d.offset[1], d.offset[2]) }; });
+  }
+  // Mirrors the base-curve construction inside regenerateLockGeometry, without rebuilding meshes --
+  // used by the smooth brush to convert a t-space distance along one hair into world units.
+  function lockCurveLength(lock){
+    var meshOffset = lock.meshOffset || 0;
+    var curvePoints = lock.points;
+    if(meshOffset){
+      curvePoints = lock.points.map(function(p){
+        var dir = p.lengthSq() > 1e-8 ? p.clone().normalize() : new THREE.Vector3(0,1,0);
+        return p.clone().addScaledVector(dir, meshOffset);
+      });
+    }
+    return new THREE.CatmullRomCurve3(curvePoints, false, 'centripetal', 0.5).getLength();
   }
 
   /* ============================================================
@@ -2510,6 +2539,28 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     if(!skipMirrorSync) syncMirrorPartner(lock);
   }
 
+  // Smooth brush: relaxes (and eventually removes) any localized sculpt-brush bumps on ONE hair
+  // near t0, same t-space-to-world-length conversion buildStrandGeometry uses for those bumps.
+  var smoothStrength = 0.35; // fraction of remaining offset relaxed away per brush tick -- set via the Strength slider
+  function applySmoothAt(lock, seedIndex, t0){
+    var seed = lock.seeds[seedIndex];
+    if(!seed || !seed.deforms || !seed.deforms.length) return;
+    var curveLen = lockCurveLength(lock);
+    var tMax = Math.max(0.16, 1 - seed.lengthRand * (lock.lengthVariation || 0));
+    var effLen = curveLen * tMax;
+    var changed = false;
+    for(var i=seed.deforms.length-1;i>=0;i--){
+      var d = seed.deforms[i];
+      var dist = Math.abs(d.t - t0) * effLen;
+      if(dist <= d.radius){
+        d.offset.multiplyScalar(1 - smoothStrength * brushFalloff(dist, d.radius));
+        changed = true;
+        if(d.offset.lengthSq() < 1e-7) seed.deforms.splice(i, 1);
+      }
+    }
+    if(changed) regenerateLockGeometry(lock);
+  }
+
   // While a mirrored pair is linked, editing one live-mirrors the other (points, shape and
   // style) across the X=0 plane -- points, sliders, brush strokes, trims, all of it, since
   // they all funnel through regenerateLockGeometry. skipMirrorSync=true on the partner's own
@@ -3013,6 +3064,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       txt = selectedLockId ? (detachHairRoot ? t('hint.brush.single.selectedDetached') : t('hint.brush.single.selected')) : t('hint.brush.single.none');
     } else if(activeBrush === 'sculpt'){
       txt = selectedLockId ? t('hint.brush.sculpt.selected') : t('hint.brush.sculpt.none');
+    } else if(activeBrush === 'smooth'){
+      txt = selectedLockId ? t('hint.brush.smooth.selected') : t('hint.brush.smooth.none');
     } else if(mode === 'add'){
       txt = draftPoints.length === 0 ? t('hint.add.start') : t('hint.add.continue', {n: draftPoints.length});
     } else if(mode === 'edit'){
@@ -3050,6 +3103,8 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   var brushRadiusSlider = document.getElementById('brush-radius-slider');
   var brushOptionsSingleEl = document.getElementById('brush-options-single');
   var detachRootToggle = document.getElementById('detach-root-toggle');
+  var brushOptionsSmoothEl = document.getElementById('brush-options-smooth');
+  var smoothStrengthSlider = document.getElementById('smooth-strength-slider');
   Array.prototype.forEach.call(brushbarEl.querySelectorAll('.brush-btn'), function(btn){
     btn.addEventListener('click', function(){
       activeBrush = (activeBrush === btn.dataset.brush) ? null : btn.dataset.brush;
@@ -3057,8 +3112,9 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
         b.classList.toggle('active', b.dataset.brush === activeBrush);
       });
       viewportEl.classList.toggle('mode-brush', !!activeBrush);
-      brushOptionsEl.classList.toggle('visible', activeBrush === 'move' || activeBrush === 'sculpt');
+      brushOptionsEl.classList.toggle('visible', activeBrush === 'move' || activeBrush === 'sculpt' || activeBrush === 'smooth');
       brushOptionsSingleEl.classList.toggle('visible', activeBrush === 'single');
+      brushOptionsSmoothEl.classList.toggle('visible', activeBrush === 'smooth');
       if(!activeBrush) brushCursor.visible = false;
       if(activeBrush !== 'single') clearSingleHairSelection();
       updateHint();
@@ -3071,6 +3127,9 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   detachRootToggle.addEventListener('change', function(){
     detachHairRoot = detachRootToggle.checked;
     updateHint();
+  });
+  smoothStrengthSlider.addEventListener('input', function(){
+    smoothStrength = parseFloat(smoothStrengthSlider.value);
   });
 
   function round4(n){ return Math.round(n*10000)/10000; }
@@ -3682,9 +3741,24 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
         if(hitSc && hitSc.uv){
           pushUndoSnapshot();
           var seedSc = lockSc.seeds[hitSc.object.userData.seedIndex];
-          var entry = { t: Math.min(1, Math.max(0, hitSc.uv.y)), radius: brushRadius, offset: new THREE.Vector3(0,0,0) };
+          var tSc = Math.min(1, Math.max(0, hitSc.uv.y));
+          var entry = { t: tSc, radius: brushRadius, offset: new THREE.Vector3(0,0,0) };
           seedSc.deforms.push(entry);
           sculptDrag = { lock: lockSc, seed: seedSc, entry: entry, refPoint: hitSc.point.clone() };
+          if(e.shiftKey) applySmoothAt(lockSc, hitSc.object.userData.seedIndex, tSc); // Shift held from the start -- smooth, not sculpt
+          return;
+        }
+      }
+    }
+
+    if(activeBrush === 'smooth' && selectedLockId){
+      var lockSm = getLock(selectedLockId);
+      if(lockSm){
+        var hitSm = raycastObjects(lockSm.group.children);
+        if(hitSm && hitSm.uv){
+          pushUndoSnapshot();
+          smoothActive = true;
+          applySmoothAt(lockSm, hitSm.object.userData.seedIndex, Math.min(1, Math.max(0, hitSm.uv.y)));
           return;
         }
       }
@@ -3737,12 +3811,33 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     }
     if(sculptDrag){
       setNdcFromEvent(e);
-      var ptSc = raycastPlaneThrough(sculptDrag.refPoint);
-      var deltaSc = ptSc.clone().sub(sculptDrag.refPoint);
-      sculptDrag.entry.offset.add(deltaSc);
-      sculptDrag.refPoint.copy(ptSc);
-      brushCursor.position.copy(ptSc);
-      regenerateLockGeometry(sculptDrag.lock);
+      if(e.shiftKey){
+        // Shift held mid-stroke -- temporarily act as the smooth brush under the cursor instead
+        // of growing the sculpt bump (releasing Shift resumes sculpting right where it left off).
+        var hitScDyn = raycastObjects(sculptDrag.lock.group.children);
+        if(hitScDyn && hitScDyn.uv){
+          brushCursor.position.copy(hitScDyn.point);
+          applySmoothAt(sculptDrag.lock, hitScDyn.object.userData.seedIndex, Math.min(1, Math.max(0, hitScDyn.uv.y)));
+        }
+        sculptDrag.refPoint.copy(raycastPlaneThrough(sculptDrag.refPoint)); // keep tracking the cursor so sculpting resumes without a jump
+      } else {
+        var ptSc = raycastPlaneThrough(sculptDrag.refPoint);
+        var deltaSc = ptSc.clone().sub(sculptDrag.refPoint);
+        sculptDrag.entry.offset.add(deltaSc);
+        sculptDrag.refPoint.copy(ptSc);
+        brushCursor.position.copy(ptSc);
+        regenerateLockGeometry(sculptDrag.lock);
+      }
+      return;
+    }
+    if(smoothActive){
+      setNdcFromEvent(e);
+      var lockSmM = getLock(selectedLockId);
+      var hitSmM = lockSmM ? raycastObjects(lockSmM.group.children) : null;
+      if(hitSmM && hitSmM.uv){
+        brushCursor.position.copy(hitSmM.point);
+        applySmoothAt(lockSmM, hitSmM.object.userData.seedIndex, Math.min(1, Math.max(0, hitSmM.uv.y)));
+      }
       return;
     }
     if(brushDrag){
@@ -3766,7 +3861,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       regenerateLockGeometry(markerDrag.lock);
       return;
     }
-    if((activeBrush === 'move' || activeBrush === 'single' || activeBrush === 'sculpt') && !pointerDown){
+    if((activeBrush === 'move' || activeBrush === 'single' || activeBrush === 'sculpt' || activeBrush === 'smooth') && !pointerDown){
       setNdcFromEvent(e);
       var lockH = getLock(selectedLockId);
       var hitH = lockH ? raycastObjects(lockH.group.children) : null;
@@ -3818,6 +3913,11 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
       pointerDown = false;
       return;
     }
+    if(smoothActive){
+      smoothActive = false;
+      pointerDown = false;
+      return;
+    }
     if(brushDrag){
       brushDrag = null;
       pointerDown = false;
@@ -3836,7 +3936,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
   });
 
   viewportEl.addEventListener('pointerleave', function(){
-    if(!brushDrag && !singleHairDrag && !sculptDrag) brushCursor.visible = false;
+    if(!brushDrag && !singleHairDrag && !sculptDrag && !smoothActive) brushCursor.visible = false;
   });
   viewportEl.addEventListener('pointercancel', function(){
     rollDrag = null;
@@ -3844,6 +3944,7 @@ window.LOKON_DEFAULT_HEAD_B64 = "JSwAAKxXAAAAAAAAXMINQ7TRDEEAAAAA5QEPQ5LrFEEAAAA
     markerDrag = null;
     singleHairDrag = null;
     sculptDrag = null;
+    smoothActive = false;
     pointerDown = false;
   });
 
