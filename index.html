@@ -112,6 +112,7 @@
     transition:background .15s ease, color .15s ease;
   }
   .brush-btn svg{width:19px;height:19px;}
+  .brush-btn img{width:19px;height:19px;object-fit:contain;display:block;}
   .brush-btn:hover{background:rgba(255,255,255,0.06);color:var(--text);}
   .brush-btn.active{background:var(--accent);color:#1a0e14;}
   .brush-options{
@@ -416,9 +417,7 @@
 
   <aside id="brushbar">
     <button class="brush-btn" data-brush="move" title="Мув — локальный сдвиг мелких прядок" data-i18n-title="brush.move.title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12.5 2.5c1.5 2.3-1.8 3.6-1.4 6.2.3 2 2.6 2.4 2.4 4.6-.2 2-2.4 2.3-2.1 4.4.2 1.6 1.6 2.1 1.4 3.8"/>
-      </svg>
+      <img src="https://raw.githubusercontent.com/DimaBurger1648/schopsche.github.io/main/images/big_move.png" alt="Мув">
     </button>
     <button class="brush-btn" data-brush="single" title="Один волос — выделить и подвинуть один волосок" data-i18n-title="brush.single.title">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
