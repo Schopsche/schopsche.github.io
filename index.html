@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schopsche — Dmitry Klimakov, 3D Character Artist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#05080a;
+    --void-2:#080f0d;
+    --panel:#0b1512;
+    --panel-2:#0e1a16;
+    --edge: rgba(120,235,190,0.14);
+    --edge-strong: rgba(120,235,190,0.32);
+    --emerald-deep:#0c4a37;
+    --emerald:#2bd6a1;
+    --emerald-soft:#8fe9c9;
+    --violet-deep:#2a1152;
+    --violet:#a56bff;
+    --violet-soft:#cdb4ff;
+    --ink:#eaf4ef;
+    --ink-dim:#93a89f;
+    --ink-faint:#516059;
+    --grad: linear-gradient(120deg, var(--emerald) 0%, var(--violet) 100%);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--void); color:var(--ink); font-family:'Manrope', sans-serif;
+    overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--emerald); color:var(--void); }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  ul{ list-style:none; }
+
+  body[data-lang="ru"] .en{ display:none; }
+  body[data-lang="en"] .ru{ display:none; }
+
+  /* ---------- ambient ---------- */
+  .noise{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.045; mix-blend-mode:overlay; }
+  .blobs{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .blob{ position:absolute; border-radius:50%; filter:blur(100px); opacity:.25; }
+  .blob.e{ width:32vw; height:32vw; background:var(--emerald-deep); top:-8%; left:-10%; animation:drift1 28s ease-in-out infinite; }
+  .blob.v{ width:28vw; height:28vw; background:var(--violet-deep); bottom:-6%; right:-8%; animation:drift2 32s ease-in-out infinite; }
+  @keyframes drift1{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(3vw,4vw); } }
+  @keyframes drift2{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-3vw,-3vw); } }
+
+  section{ position:relative; z-index:5; }
+  .wrap{ max-width:960px; margin:0 auto; padding:0 clamp(1.25rem,4vw,2rem); }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(14px);
+    background:rgba(5,8,10,.72); border-bottom:1px solid var(--edge);
+  }
+  .topbar-inner{ display:flex; align-items:center; justify-content:space-between; padding:.85rem clamp(1.25rem,4vw,2rem); gap:1rem; }
+  .brand{ display:flex; align-items:center; gap:.55rem; font-family:'Unbounded',sans-serif; font-weight:700; font-size:.95rem; letter-spacing:.02em; flex-shrink:0; }
+  .brand svg{ width:20px; height:20px; }
+
+  .nav-links{ display:flex; gap:1.4rem; font-size:.86rem; color:var(--ink-dim); }
+  .nav-links a{ transition:color .2s ease; }
+  .nav-links a:hover{ color:var(--emerald-soft); }
+  @media (max-width:640px){ .nav-links{ display:none; } }
+
+  .lang-switch{ display:flex; border:1px solid var(--edge); border-radius:999px; padding:2px; flex-shrink:0; }
+  .lang-switch button{
+    font-family:'Space Mono',monospace; font-size:.7rem; letter-spacing:.05em;
+    padding:.35rem .65rem; border-radius:999px; background:transparent; border:0; color:var(--ink-faint);
+    cursor:pointer; transition:all .2s ease;
+  }
+  .lang-switch button.active{ background:var(--grad); color:#05100c; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding:3.4rem 0 3rem; }
+  .eyebrow{
+    font-family:'Space Mono',monospace; font-size:.72rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--emerald-soft);
+  }
+  .name{
+    font-family:'Unbounded', sans-serif; font-weight:800;
+    font-size:clamp(1.9rem, 4.6vw, 3rem); line-height:1.05; letter-spacing:-.01em;
+    margin-top:.6rem;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .tagline{ margin-top:.7rem; font-size:1.02rem; color:var(--ink-dim); max-width:34rem; line-height:1.6; }
+  .status{
+    margin-top:1rem; display:inline-flex; align-items:center; gap:.5rem;
+    font-family:'Space Mono',monospace; font-size:.75rem; color:var(--ink-faint);
+  }
+  .status .pulse{ width:6px; height:6px; border-radius:50%; background:var(--emerald); box-shadow:0 0 8px 2px rgba(43,214,161,.7); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+
+  /* ---------- section chrome ---------- */
+  section.pad{ padding:3rem 0; border-top:1px solid var(--edge); }
+  .section-title{ font-family:'Unbounded',sans-serif; font-weight:700; font-size:clamp(1.25rem,2.6vw,1.6rem); margin-bottom:1.6rem; }
+
+  .reveal{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- about ---------- */
+  .about-grid{ display:grid; grid-template-columns:1.4fr 1fr; gap:2rem; align-items:start; }
+  @media (max-width:760px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-text p{ font-size:1rem; line-height:1.65; color:var(--ink-dim); }
+  .about-text p + p{ margin-top:.8rem; }
+  .tags{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.3rem; }
+  .tag{
+    font-family:'Space Mono',monospace; font-size:.7rem; padding:.4rem .75rem;
+    border-radius:7px; border:1px solid var(--edge); color:var(--emerald-soft);
+    background:rgba(43,214,161,.05);
+  }
+  .about-panel{
+    border:1px solid var(--edge); border-radius:14px; padding:1.4rem;
+    background:linear-gradient(160deg, var(--panel), var(--panel-2));
+    display:flex; gap:.9rem; align-items:flex-start;
+  }
+  .about-panel .portrait{ width:52px; height:52px; border-radius:50%; object-fit:cover; border:1px solid var(--edge-strong); flex-shrink:0; }
+  .about-panel .who{ font-family:'Unbounded',sans-serif; font-weight:600; font-size:.95rem; margin-bottom:.5rem; }
+  .about-panel .facts li{ font-family:'Space Mono',monospace; font-size:.73rem; color:var(--ink-dim); padding-left:.9rem; position:relative; margin-top:.35rem; }
+  .about-panel .facts li:first-child{ margin-top:0; }
+  .about-panel .facts li::before{ content:''; position:absolute; left:0; top:.4em; width:4px; height:4px; border-radius:50%; background:var(--emerald); }
+
+  /* ---------- projects ---------- */
+  .projects-grid{ display:flex; flex-direction:column; gap:1.2rem; }
+  .card{
+    border:1px solid var(--edge); border-radius:14px; padding:1.5rem;
+    background:rgba(255,255,255,.012);
+  }
+  .card-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.6rem; flex-wrap:wrap; }
+  .card-title{ font-family:'Unbounded',sans-serif; font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:.6rem; }
+  .card-tag{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--violet-soft); border:1px solid rgba(165,107,255,.25); padding:.25rem .6rem; border-radius:999px; background:rgba(165,107,255,.05); }
+  .card p.desc{ color:var(--ink-dim); font-size:.94rem; line-height:1.6; max-width:38rem; }
+
+  .badges{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:1rem; }
+  .badge{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--ink-dim); border:1px solid var(--edge); padding:.32rem .65rem; border-radius:999px; }
+
+  .bezel{
+    margin-top:1.1rem; border:1px solid var(--edge); border-radius:12px; overflow:hidden;
+    background:var(--void-2);
+  }
+  .bezel .bar{ display:flex; align-items:center; justify-content:space-between; padding:.5rem .8rem; border-bottom:1px solid var(--edge); }
+  .bezel .bar .label{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--ink-faint); }
+  .bezel .bar a{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--emerald-soft); }
+  .bezel .frame{ aspect-ratio:16/9; background:#000; }
+  .bezel iframe{ width:100%; height:100%; border:0; display:block; }
+
+  .thumb{ width:100%; max-height:150px; object-fit:cover; border-radius:8px; margin-bottom:1rem; opacity:.9; }
+
+  .script-list{ margin-top:1.1rem; display:flex; flex-direction:column; gap:.6rem; }
+  .script-empty{
+    border:1px dashed var(--edge-strong); border-radius:10px; padding:1rem;
+    text-align:center; font-family:'Space Mono',monospace; font-size:.78rem; color:var(--ink-faint);
+  }
+  .script-item{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    border:1px solid var(--edge); border-radius:10px; padding:.9rem 1.1rem;
+  }
+  .script-item-title{ font-family:'Unbounded',sans-serif; font-weight:600; font-size:.92rem; }
+  .script-item-desc{ color:var(--ink-dim); font-size:.82rem; margin-top:.2rem; }
+  .script-item .btn{ margin-top:0; }
+
+  .btn{
+    font-family:'Manrope',sans-serif; font-weight:700; font-size:.85rem;
+    padding:.65rem 1.2rem; border-radius:999px; display:inline-flex; align-items:center; gap:.4rem;
+    transition:transform .2s ease, box-shadow .2s ease; border:1px solid transparent; cursor:pointer; margin-top:1rem;
+  }
+  .btn-fill{ background:var(--grad); color:#05100c; }
+  .btn-fill:hover{ transform:translateY(-1px); box-shadow:0 8px 22px -8px rgba(43,214,161,.5); }
+  .btn-line{ border-color:var(--edge-strong); color:var(--ink); }
+  .btn-line:hover{ border-color:var(--emerald); color:var(--emerald-soft); }
+  .btn-lg{ font-size:1rem; padding:.9rem 1.8rem; width:100%; justify-content:center; margin-top:1.2rem; }
+
+  /* ---------- contact ---------- */
+  .contact p{ color:var(--ink-dim); font-size:.98rem; margin-bottom:1.2rem; }
+  .contact-links{ display:flex; gap:.6rem; flex-wrap:wrap; }
+  .contact-links .btn{ margin-top:0; }
+
+  footer{
+    border-top:1px solid var(--edge); padding:1.6rem 0; text-align:center;
+    font-family:'Space Mono',monospace; font-size:.7rem; color:var(--ink-faint);
+  }
+  footer .line2{ margin-top:.3rem; opacity:.65; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body data-lang="en">
+
+<svg class="noise" width="0" height="0">
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter>
+</svg>
+<div class="noise" style="filter:url(#grain);"></div>
+<div class="blobs"><div class="blob e"></div><div class="blob v"></div></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2bd6a1"/><stop offset="1" stop-color="#a56bff"/>
+          </linearGradient>
+        </defs>
+        <path d="M150,10 260,150 150,290 40,150 Z" fill="url(#lg1)" fill-opacity="0.9"/>
+        <path d="M150,10 150,290" stroke="rgba(5,8,10,.5)" stroke-width="3"/>
+        <path d="M40,150 260,150" stroke="rgba(5,8,10,.5)" stroke-width="3"/>
+      </svg>
+      SCHOPSCHE
+    </a>
+    <nav class="nav-links">
+      <a href="#about"><span class="ru">Об авторе</span><span class="en">About</span></a>
+      <a href="#lokon"><span class="ru">Локон</span><span class="en">Lokon</span></a>
+      <a href="#scripts"><span class="ru">Скрипты</span><span class="en">Scripts</span></a>
+      <a href="#portfolio"><span class="ru">Портфолио</span><span class="en">Portfolio</span></a>
+      <a href="#contact"><span class="ru">Контакты</span><span class="en">Contact</span></a>
+    </nav>
+    <div class="lang-switch">
+      <button data-set-lang="ru">RU</button>
+      <button data-set-lang="en" class="active">EN</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">
+      <span class="ru">3D Character Artist · Астрахань</span>
+      <span class="en">3D Character Artist · Astrakhan</span>
+    </div>
+    <h1 class="name">SCHOPSCHE</h1>
+    <p class="tagline">
+      <span class="ru">3D-художник по персонажам и пропсам. Больше 5 лет в индустрии, до этого — художественное училище.</span>
+      <span class="en">3D artist working on characters and props. 5+ years in the industry, before that — art college.</span>
+    </p>
+    <div class="status">
+      <span class="pulse"></span>
+      <span class="ru">Дмитрий Климаков</span><span class="en">Dmitry Klimakov</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="pad reveal" id="about">
+  <div class="wrap">
+    <h2 class="section-title"><span class="ru">Об авторе</span><span class="en">About</span></h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          <span class="ru">3D-художник по персонажам и пропсам. Больше 5 лет в индустрии, до этого — художественное училище.</span>
+          <span class="en">3D artist working on characters and props. 5+ years in the industry, before that — art college.</span>
+        </p>
+        <p>
+          <span class="ru">Полный цикл: скульпт в ZBrush, ретопология и развёртка, текстуры и материалы, причёска и груминг, финальный рендер под портфолио.</span>
+          <span class="en">Full pipeline: sculpting in ZBrush, retopology and UVs, texturing and materials, hair and grooming, final render for portfolio.</span>
+        </p>
+        <div class="tags">
+          <span class="tag">ZBrush</span>
+          <span class="tag">Maya</span>
+          <span class="tag">Marvelous Designer</span>
+          <span class="tag">Substance 3D Painter</span>
+          <span class="tag">Grooming & Hair</span>
+          <span class="tag">Marmoset Toolbag</span>
+        </div>
+      </div>
+      <div class="about-panel">
+        <img class="portrait" src="https://cdn.bio.link/uploads/profile_pictures/2025-09-10/2u6QwhnXCETr5BCxMWV4uKGwhSUEKObo.png" alt="Dmitry Klimakov" loading="lazy">
+        <div>
+          <div class="who"><span class="ru">Дмитрий Климаков</span><span class="en">Dmitry Klimakov</span></div>
+          <ul class="facts">
+            <li><span class="ru">5+ лет в индустрии</span><span class="en">5+ years in industry</span></li>
+            <li><span class="ru">Художественное училище</span><span class="en">Art college</span></li>
+            <li><span class="ru">Астрахань, Россия</span><span class="en">Astrakhan, Russia</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="pad reveal" id="lokon">
+  <div class="wrap">
+    <h2 class="section-title"><span class="ru">Проекты</span><span class="en">Projects</span></h2>
+    <div class="projects-grid">
+
+      <!-- Lokon -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Lokon</div>
+          <span class="card-tag"><span class="ru">Инструмент</span><span class="en">Tool</span></span>
+        </div>
+        <p class="desc">
+          <span class="ru">3D-конструктор волос в браузере, сделал сам. Рисуете направление пряди на голове, двигаете и крутите форму, сглаживаете и обрезаете лишнее.</span>
+          <span class="en">Browser-based 3D hair tool, built from scratch. Draw the strand direction on the head, move and twist the shape, smooth and trim.</span>
+        </p>
+        <div class="badges">
+          <span class="badge"><span class="ru">Экспорт .obj</span><span class="en">.obj export</span></span>
+          <span class="badge"><span class="ru">Симметрия X</span><span class="en">X symmetry</span></span>
+          <span class="badge"><span class="ru">Референсы</span><span class="en">References</span></span>
+          <span class="badge"><span class="ru">Магнит к поверхности</span><span class="en">Surface snap</span></span>
+          <span class="badge"><span class="ru">Мув</span><span class="en">Move</span></span>
+          <span class="badge"><span class="ru">Один волос</span><span class="en">Single hair</span></span>
+          <span class="badge"><span class="ru">Лепка</span><span class="en">Sculpt</span></span>
+          <span class="badge"><span class="ru">Смус</span><span class="en">Smooth</span></span>
+        </div>
+        <a class="btn btn-fill btn-lg" href="https://dimaburger1648.github.io/schopsche.github.io/" target="_blank" rel="noopener">
+          <span class="ru">Открыть Локон ↗</span><span class="en">Open Lokon ↗</span>
+        </a>
+        <div class="bezel">
+          <div class="bar">
+            <span class="label">schopsche.github.io</span>
+            <a href="https://dimaburger1648.github.io/schopsche.github.io/" target="_blank" rel="noopener">
+              <span class="ru">открыть на весь экран ↗</span><span class="en">open fullscreen ↗</span>
+            </a>
+          </div>
+          <div class="frame">
+            <iframe src="https://dimaburger1648.github.io/schopsche.github.io/" loading="lazy" title="Lokon — 3D hair tool"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scripts -->
+      <div class="card" id="scripts">
+        <div class="card-head">
+          <div class="card-title"><span class="ru">Скрипты</span><span class="en">Scripts</span></div>
+          <span class="card-tag"><span class="ru">Скоро</span><span class="en">Coming soon</span></span>
+        </div>
+        <p class="desc">
+          <span class="ru">Небольшие тулзы и скрипты для 3D-работы. Будут появляться здесь по мере готовности.</span>
+          <span class="en">Small tools and scripts for 3D work. Added here as they're ready.</span>
+        </p>
+        <div class="script-list">
+          <div class="script-empty">
+            <span class="ru">Скриптов пока нет — загляните позже</span>
+            <span class="en">No scripts yet — check back soon</span>
+          </div>
+          <!-- add future scripts as rows here, e.g.:
+          <div class="script-item">
+            <div>
+              <div class="script-item-title">Script name</div>
+              <p class="script-item-desc">One line about what it does.</p>
+            </div>
+            <a class="btn btn-line" href="#" target="_blank" rel="noopener">Download ↗</a>
+          </div>
+          -->
+        </div>
+      </div>
+
+      <!-- Portfolio -->
+      <div class="card" id="portfolio">
+        <div class="card-head">
+          <div class="card-title">ArtStation</div>
+          <span class="card-tag"><span class="ru">Портфолио</span><span class="en">Portfolio</span></span>
+        </div>
+        <img class="thumb" src="https://cdna.artstation.com/p/users/covers/001/970/818/small/2189ae924073f3bcc94b6f3e630022d1.jpg?1704237963" alt="ArtStation cover" loading="lazy">
+        <p class="desc">
+          <span class="ru">Персонажи и пропсы, весь процесс — от блокинга до рендера.</span>
+          <span class="en">Characters and props, full process — from blockout to final render.</span>
+        </p>
+        <a class="btn btn-fill" href="https://www.artstation.com/schopsche" target="_blank" rel="noopener">
+          <span class="ru">Смотреть работы ↗</span><span class="en">View work ↗</span>
+        </a>
+      </div>
+
+      <!-- future cards (scripts etc.) go here -->
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="pad contact reveal" id="contact">
+  <div class="wrap">
+    <h2 class="section-title"><span class="ru">Контакты</span><span class="en">Contact</span></h2>
+    <p><span class="ru">Пишите в Telegram.</span><span class="en">Reach out on Telegram.</span></p>
+    <div class="contact-links">
+      <a class="btn btn-fill" href="https://t.me/schopsche1" target="_blank" rel="noopener">Telegram ↗</a>
+      <a class="btn btn-line" href="https://www.artstation.com/schopsche" target="_blank" rel="noopener">ArtStation ↗</a>
+      <a class="btn btn-line" href="https://www.linkedin.com/in/dima-klimakov-82aa57201/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn btn-line" href="https://docs.google.com/document/d/1Or94-P-WPxWEgls_V5aVITYbxtowkiAC9_W8dyuOTC8/edit?usp=sharing" target="_blank" rel="noopener">
+        <span class="ru">Резюме ↗</span><span class="en">CV ↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><span class="ru">Схопше · Дмитрий Климаков — 3D-художник по персонажам</span><span class="en">Schopsche · Dmitry Klimakov — 3D Character Artist</span></div>
+  <div class="line2"><span class="ru">Астрахань, Россия</span><span class="en">Astrakhan, Russia</span> · © 2026</div>
+</footer>
+
+<script>
+  // language toggle (no storage — resets each load, defaults to browser language)
+  function setLang(lang){
+    document.body.setAttribute('data-lang', lang);
+    document.querySelectorAll('.lang-switch button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.setLang === lang);
+    });
+  }
+  document.querySelectorAll('.lang-switch button').forEach(b=>{
+    b.addEventListener('click', ()=> setLang(b.dataset.setLang));
+  });
+  setLang('en');
+
+  // gentle reveal on scroll
+  var revealEls = document.querySelectorAll('.reveal');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); } });
+  }, { threshold:.1 });
+  revealEls.forEach(function(el){ io.observe(el); });
+</script>
+
+</body>
+</html>
