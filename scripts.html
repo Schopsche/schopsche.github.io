@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripts — Schopsche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#05080a;
+    --void-2:#080f0d;
+    --panel:#0b1512;
+    --panel-2:#0e1a16;
+    --edge: rgba(120,235,190,0.14);
+    --edge-strong: rgba(120,235,190,0.32);
+    --emerald-deep:#0c4a37;
+    --emerald:#2bd6a1;
+    --emerald-soft:#8fe9c9;
+    --violet-deep:#2a1152;
+    --violet:#a56bff;
+    --violet-soft:#cdb4ff;
+    --ink:#eaf4ef;
+    --ink-dim:#93a89f;
+    --ink-faint:#516059;
+    --grad: linear-gradient(120deg, var(--emerald) 0%, var(--violet) 100%);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--void); color:var(--ink); font-family:'Manrope', sans-serif;
+    overflow-x:hidden; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--emerald); color:var(--void); }
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+  ul{ list-style:none; }
+
+  body[data-lang="ru"] .en{ display:none; }
+  body[data-lang="en"] .ru{ display:none; }
+
+  .noise{ position:fixed; inset:0; z-index:2; pointer-events:none; opacity:.045; mix-blend-mode:overlay; }
+  .blobs{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
+  .blob{ position:absolute; border-radius:50%; filter:blur(100px); opacity:.25; }
+  .blob.e{ width:32vw; height:32vw; background:var(--emerald-deep); top:-8%; left:-10%; animation:drift1 28s ease-in-out infinite; }
+  .blob.v{ width:28vw; height:28vw; background:var(--violet-deep); bottom:-6%; right:-8%; animation:drift2 32s ease-in-out infinite; }
+  @keyframes drift1{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(3vw,4vw); } }
+  @keyframes drift2{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-3vw,-3vw); } }
+
+  section{ position:relative; z-index:5; }
+  .wrap{ max-width:960px; margin:0 auto; padding:0 clamp(1.25rem,4vw,2rem); }
+
+  .topbar{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(14px);
+    background:rgba(5,8,10,.72); border-bottom:1px solid var(--edge);
+  }
+  .topbar-inner{ display:flex; align-items:center; justify-content:space-between; padding:.85rem clamp(1.25rem,4vw,2rem); gap:1rem; }
+  .brand{ display:flex; align-items:center; gap:.55rem; font-family:'Unbounded',sans-serif; font-weight:700; font-size:.95rem; letter-spacing:.02em; flex-shrink:0; }
+  .brand svg{ width:20px; height:20px; }
+
+  .nav-links{ display:flex; gap:1.4rem; font-size:.86rem; color:var(--ink-dim); }
+  .nav-links a{ transition:color .2s ease; }
+  .nav-links a:hover, .nav-links a.active{ color:var(--emerald-soft); }
+  @media (max-width:640px){ .nav-links{ display:none; } }
+
+  .lang-switch{ display:flex; border:1px solid var(--edge); border-radius:999px; padding:2px; flex-shrink:0; }
+  .lang-switch button{
+    font-family:'Space Mono',monospace; font-size:.7rem; letter-spacing:.05em;
+    padding:.35rem .65rem; border-radius:999px; background:transparent; border:0; color:var(--ink-faint);
+    cursor:pointer; transition:all .2s ease;
+  }
+  .lang-switch button.active{ background:var(--grad); color:#05100c; }
+
+  .page-head{ padding:3rem 0 2rem; }
+  .back-link{
+    font-family:'Space Mono',monospace; font-size:.75rem; color:var(--ink-faint);
+    display:inline-flex; align-items:center; gap:.4rem; margin-bottom:1rem; transition:color .2s ease;
+  }
+  .back-link:hover{ color:var(--emerald-soft); }
+  .page-title{
+    font-family:'Unbounded', sans-serif; font-weight:800;
+    font-size:clamp(1.9rem, 4.6vw, 3rem); line-height:1.05; letter-spacing:-.01em;
+    background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .page-sub{ margin-top:.7rem; font-size:1.02rem; color:var(--ink-dim); max-width:34rem; line-height:1.6; }
+
+  section.pad{ padding:1rem 0 4rem; }
+
+  .card{
+    border:1px solid var(--edge); border-radius:14px; padding:1.5rem;
+    background:rgba(255,255,255,.012);
+  }
+  .card-head{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.6rem; flex-wrap:wrap; }
+  .card-title{ font-family:'Unbounded',sans-serif; font-weight:700; font-size:1.15rem; display:flex; align-items:center; gap:.6rem; }
+  .card-tag{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--violet-soft); border:1px solid rgba(165,107,255,.25); padding:.25rem .6rem; border-radius:999px; background:rgba(165,107,255,.05); }
+  .card p.desc{ color:var(--ink-dim); font-size:.94rem; line-height:1.6; max-width:38rem; }
+  .badge{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--ink-dim); border:1px solid var(--edge); padding:.32rem .65rem; border-radius:999px; }
+
+  .script-list{ display:flex; flex-direction:column; gap:.8rem; }
+  .script-item{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    border:1px solid var(--edge); border-radius:12px; padding:1.1rem 1.3rem;
+    transition:border-color .2s ease;
+  }
+  .script-item:hover{ border-color:var(--edge-strong); }
+  .script-item-title{ font-family:'Unbounded',sans-serif; font-weight:600; font-size:1rem; display:flex; align-items:center; gap:.55rem; }
+  .script-item-title .ext{ font-family:'Space Mono',monospace; font-size:.65rem; color:var(--violet-soft); border:1px solid rgba(165,107,255,.25); padding:.2rem .5rem; border-radius:6px; }
+  .script-item-desc{ color:var(--ink-dim); font-size:.85rem; margin-top:.3rem; }
+  .script-empty{
+    border:1px dashed var(--edge-strong); border-radius:10px; padding:1.2rem;
+    text-align:center; font-family:'Space Mono',monospace; font-size:.78rem; color:var(--ink-faint);
+  }
+
+  .btn{
+    font-family:'Manrope',sans-serif; font-weight:700; font-size:.85rem;
+    padding:.65rem 1.2rem; border-radius:999px; display:inline-flex; align-items:center; gap:.4rem;
+    transition:transform .2s ease, box-shadow .2s ease; border:1px solid transparent; cursor:pointer;
+  }
+  .btn-fill{ background:var(--grad); color:#05100c; }
+  .btn-fill:hover{ transform:translateY(-1px); box-shadow:0 8px 22px -8px rgba(43,214,161,.5); }
+
+  footer{
+    border-top:1px solid var(--edge); padding:1.6rem 0; text-align:center;
+    font-family:'Space Mono',monospace; font-size:.7rem; color:var(--ink-faint);
+  }
+  footer .line2{ margin-top:.3rem; opacity:.65; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body data-lang="en">
+
+<svg class="noise" width="0" height="0">
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter>
+</svg>
+<div class="noise" style="filter:url(#grain);"></div>
+<div class="blobs"><div class="blob e"></div><div class="blob v"></div></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#2bd6a1"/><stop offset="1" stop-color="#a56bff"/>
+          </linearGradient>
+        </defs>
+        <path d="M150,10 260,150 150,290 40,150 Z" fill="url(#lg1)" fill-opacity="0.9"/>
+        <path d="M150,10 150,290" stroke="rgba(5,8,10,.5)" stroke-width="3"/>
+        <path d="M40,150 260,150" stroke="rgba(5,8,10,.5)" stroke-width="3"/>
+      </svg>
+      SCHOPSCHE
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#about"><span class="ru">Об авторе</span><span class="en">About</span></a>
+      <a href="index.html#lokon"><span class="ru">Локон</span><span class="en">Lokon</span></a>
+      <a href="scripts.html" class="active"><span class="ru">Скрипты</span><span class="en">Scripts</span></a>
+      <a href="index.html#portfolio"><span class="ru">Портфолио</span><span class="en">Portfolio</span></a>
+      <a href="index.html#contact"><span class="ru">Контакты</span><span class="en">Contact</span></a>
+    </nav>
+    <div class="lang-switch">
+      <button data-set-lang="ru">RU</button>
+      <button data-set-lang="en" class="active">EN</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="wrap">
+    <a class="back-link" href="index.html">← <span class="ru">на главную</span><span class="en">back to site</span></a>
+    <h1 class="page-title">SCRIPTS</h1>
+    <p class="page-sub">
+      <span class="ru">Скрипты и тулзы для Maya. Ниже — менеджер скриптов, который их запускает, и сами скрипты.</span>
+      <span class="en">Scripts and tools for Maya. Below: the manager that runs them, and the scripts themselves.</span>
+    </p>
+  </div>
+</section>
+
+<section class="pad">
+  <div class="wrap">
+    <div class="card" style="margin-bottom:1.2rem;">
+      <div class="card-head">
+        <div class="card-title">Script Manager</div>
+        <span class="card-tag">Maya</span>
+      </div>
+      <p class="desc">
+        <span class="ru">Удобный проводник по своим скриптам для Maya — вместо кривых багующих полочек. Добавляй скрипты, рисуй значки, группируй по папкам, редактируй прямо на месте (открывается блокнот).</span>
+        <span class="en">A slick, convenient explorer for your Maya scripts — no more buggy, janky shelves. Add scripts, draw your own icons, group them into folders, edit them right there (opens in Notepad).</span>
+      </p>
+      <div class="badges" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;">
+        <span class="badge"><span class="ru">Добавление скриптов</span><span class="en">Add scripts</span></span>
+        <span class="badge"><span class="ru">Свои значки</span><span class="en">Custom icons</span></span>
+        <span class="badge"><span class="ru">Группировка</span><span class="en">Grouping</span></span>
+        <span class="badge"><span class="ru">Редактирование на месте</span><span class="en">In-place editing</span></span>
+      </div>
+      <p class="desc" style="margin-top:1rem;font-size:.85rem;">
+        <span class="ru">Установка: перетащи <b>install_schopsche_scripts.py</b> в окно Maya. Чтобы загрузить скрипт — жми «+».</span>
+        <span class="en">Install: drag <b>install_schopsche_scripts.py</b> into the Maya viewport. To load a script, hit "+".</span>
+      </p>
+      <a class="btn btn-fill" href="scripts/install_schopsche_scripts.py" download>
+        <span class="ru">Скачать установщик ↗</span><span class="en">Download installer ↗</span>
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="script-list">
+
+        <div class="script-item">
+          <div>
+            <div class="script-item-title">SCHOPSCHE Maya <span class="ext">.rar</span></div>
+            <p class="script-item-desc">
+              <span class="ru">Набор скриптов для Maya.</span>
+              <span class="en">A set of custom Maya scripts.</span>
+            </p>
+          </div>
+          <a class="btn btn-fill" href="scripts/SCHOPSCHEmaya.rar" download>
+            <span class="ru">Скачать ↗</span><span class="en">Download ↗</span>
+          </a>
+        </div>
+
+        <!-- add more scripts as rows here, e.g.:
+        <div class="script-item">
+          <div>
+            <div class="script-item-title">Script name <span class="ext">.py</span></div>
+            <p class="script-item-desc">
+              <span class="ru">Короткое описание.</span>
+              <span class="en">One line about what it does.</span>
+            </p>
+          </div>
+          <a class="btn btn-fill" href="scripts/filename.ext" download>
+            <span class="ru">Скачать ↗</span><span class="en">Download ↗</span>
+          </a>
+        </div>
+        -->
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div><span class="ru">Схопше · Дмитрий Климаков — 3D-художник по персонажам</span><span class="en">Schopsche · Dmitry Klimakov — 3D Character Artist</span></div>
+  <div class="line2"><span class="ru">Астрахань, Россия</span><span class="en">Astrakhan, Russia</span> · © 2026</div>
+</footer>
+
+<script>
+  function setLang(lang){
+    document.body.setAttribute('data-lang', lang);
+    document.querySelectorAll('.lang-switch button').forEach(function(b){
+      b.classList.toggle('active', b.dataset.setLang === lang);
+    });
+  }
+  document.querySelectorAll('.lang-switch button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.dataset.setLang); });
+  });
+  setLang('en');
+</script>
+
+</body>
+</html>
