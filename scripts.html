@@ -98,6 +98,13 @@
   .card p.desc{ color:var(--ink-dim); font-size:.94rem; line-height:1.6; max-width:38rem; }
   .badge{ font-family:'Space Mono',monospace; font-size:.68rem; color:var(--ink-dim); border:1px solid var(--edge); padding:.32rem .65rem; border-radius:999px; }
 
+  .card-split{ display:grid; grid-template-columns:1.4fr 1fr; gap:1.6rem; align-items:start; }
+  @media (max-width:700px){ .card-split{ grid-template-columns:1fr; } }
+  .card-split .screenshot{
+    width:100%; border-radius:12px; border:1px solid var(--edge-strong);
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.6);
+  }
+
   .script-list{ display:flex; flex-direction:column; gap:.8rem; }
   .script-item{
     display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
@@ -188,56 +195,27 @@
         <div class="card-title">Script Manager</div>
         <span class="card-tag">Maya</span>
       </div>
-      <p class="desc">
-        <span class="ru">Удобный проводник по своим скриптам для Maya — вместо кривых багующих полочек. Добавляй скрипты, рисуй значки, группируй по папкам, редактируй прямо на месте (открывается блокнот).</span>
-        <span class="en">A slick, convenient explorer for your Maya scripts — no more buggy, janky shelves. Add scripts, draw your own icons, group them into folders, edit them right there (opens in Notepad).</span>
-      </p>
-      <div class="badges" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;">
-        <span class="badge"><span class="ru">Добавление скриптов</span><span class="en">Add scripts</span></span>
-        <span class="badge"><span class="ru">Свои значки</span><span class="en">Custom icons</span></span>
-        <span class="badge"><span class="ru">Группировка</span><span class="en">Grouping</span></span>
-        <span class="badge"><span class="ru">Редактирование на месте</span><span class="en">In-place editing</span></span>
-      </div>
-      <p class="desc" style="margin-top:1rem;font-size:.85rem;">
-        <span class="ru">Установка: перетащи <b>install_schopsche_scripts.py</b> в окно Maya. Чтобы загрузить скрипт — жми «+».</span>
-        <span class="en">Install: drag <b>install_schopsche_scripts.py</b> into the Maya viewport. To load a script, hit "+".</span>
-      </p>
-      <a class="btn btn-fill" href="scripts/install_schopsche_scripts.py" download>
-        <span class="ru">Скачать установщик ↗</span><span class="en">Download installer ↗</span>
-      </a>
-    </div>
-
-    <div class="card">
-      <div class="script-list">
-
-        <div class="script-item">
-          <div>
-            <div class="script-item-title">SCHOPSCHE Maya <span class="ext">.rar</span></div>
-            <p class="script-item-desc">
-              <span class="ru">Набор скриптов для Maya.</span>
-              <span class="en">A set of custom Maya scripts.</span>
-            </p>
+      <div class="card-split">
+        <div>
+          <p class="desc">
+            <span class="ru">Удобный проводник по своим скриптам для Maya — вместо кривых багующих полочек. Добавляй скрипты, рисуй значки, группируй по папкам, редактируй прямо на месте (открывается блокнот).</span>
+            <span class="en">A slick, convenient explorer for your Maya scripts — no more buggy, janky shelves. Add scripts, draw your own icons, group them into folders, edit them right there (opens in Notepad).</span>
+          </p>
+          <div class="badges" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;">
+            <span class="badge"><span class="ru">Добавление скриптов</span><span class="en">Add scripts</span></span>
+            <span class="badge"><span class="ru">Свои значки</span><span class="en">Custom icons</span></span>
+            <span class="badge"><span class="ru">Группировка</span><span class="en">Grouping</span></span>
+            <span class="badge"><span class="ru">Редактирование на месте</span><span class="en">In-place editing</span></span>
           </div>
+          <p class="desc" style="margin-top:1rem;font-size:.85rem;">
+            <span class="ru">Установка: перетащи <b>install_schopsche_scripts.py</b> в окно Maya. Чтобы загрузить скрипт — жми «+».</span>
+            <span class="en">Install: drag <b>install_schopsche_scripts.py</b> into the Maya viewport. To load a script, hit "+".</span>
+          </p>
           <a class="btn btn-fill" href="scripts/SCHOPSCHEmaya.rar" download>
-            <span class="ru">Скачать ↗</span><span class="en">Download ↗</span>
+            <span class="ru">Скачать .rar ↗</span><span class="en">Download .rar ↗</span>
           </a>
         </div>
-
-        <!-- add more scripts as rows here, e.g.:
-        <div class="script-item">
-          <div>
-            <div class="script-item-title">Script name <span class="ext">.py</span></div>
-            <p class="script-item-desc">
-              <span class="ru">Короткое описание.</span>
-              <span class="en">One line about what it does.</span>
-            </p>
-          </div>
-          <a class="btn btn-fill" href="scripts/filename.ext" download>
-            <span class="ru">Скачать ↗</span><span class="en">Download ↗</span>
-          </a>
-        </div>
-        -->
-
+        <img class="screenshot" src="images/scripts-manager.png" alt="Schopsche Scripts manager" loading="lazy">
       </div>
     </div>
   </div>
